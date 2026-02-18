@@ -1,50 +1,188 @@
-/* ARQUIVO: locais.css */
+/* =================================================================
+   LOCAIS.CSS - ESTILO PADRONIZADO
+   ================================================================= */
 
-/* Cabeçalho da área interna */
+/* 1. BARRA DE NAVEGAÇÃO SUPERIOR (NAVBAR) */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--bg-card); /* Usa a cor do cartão global */
+    padding: 15px 30px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 30px;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.nav-logo {
+    height: 40px;
+    width: auto;
+}
+
+.nav-links .nav-item {
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 8px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.nav-links .nav-item:hover {
+    background-color: #333;
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+/* 2. LAYOUT PRINCIPAL */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
 .page-header {
-    display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
 }
-.btn-primary {
-    background-color: #FFD700; color: #000; border: none; padding: 10px 20px;
-    border-radius: 5px; font-weight: 700; cursor: pointer; transition: 0.3s;
-}
-.btn-primary:hover { background-color: #e6c200; }
 
-/* Tabela */
-.table-container {
-    overflow-x: auto;
-    border: 1px solid #333; border-radius: 8px;
+.header-title h1 {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin-bottom: 5px;
 }
-table { width: 100%; border-collapse: collapse; text-align: left; }
-thead { background-color: #1a1a1a; }
-th, td { padding: 15px; border-bottom: 1px solid #333; }
-th { color: #FFD700; font-weight: 500; font-size: 14px; }
-td { color: #ddd; font-size: 14px; }
-tbody tr:hover { background-color: #0f0f0f; }
 
-/* Modal */
-.modal {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: flex; justify-content: center; align-items: center;
-    z-index: 1000;
+.header-title p {
+    color: #888;
+    font-size: 0.9rem;
 }
-.modal-content {
-    background-color: #0a0a0a; border: 1px solid #FFD700;
-    padding: 30px; border-radius: 10px; width: 100%; max-width: 500px;
-    position: relative; animation: slideDown 0.3s ease;
+
+/* 3. TABELA (CARD TABLE) */
+.card-table {
+    background-color: var(--bg-card);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    overflow: hidden; /* Arredonda cantos da tabela */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
 }
-@keyframes slideDown {
-    from { transform: translateY(-50px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+
+.tabela-padrao {
+    width: 100%;
+    border-collapse: collapse;
 }
-.close-btn {
-    position: absolute; top: 15px; right: 20px; font-size: 24px;
-    color: #fff; cursor: pointer;
+
+.tabela-padrao th {
+    background-color: #252525;
+    color: var(--primary-color);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    padding: 15px;
+    text-align: left;
+    border-bottom: 2px solid var(--border-color);
 }
-.form-actions { margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; }
-.btn-secondary {
-    background-color: transparent; border: 1px solid #333; color: #fff;
-    padding: 10px 20px; border-radius: 5px; cursor: pointer;
+
+.tabela-padrao td {
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+    color: #ddd;
+    font-size: 0.95rem;
 }
-.btn-secondary:hover { background-color: #1a1a1a; }
+
+.tabela-padrao tr:last-child td {
+    border-bottom: none;
+}
+
+.tabela-padrao tr:hover {
+    background-color: rgba(255, 215, 0, 0.05); /* Leve dourado ao passar mouse */
+}
+
+/* Botão de Excluir na Tabela */
+.btn-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: transform 0.2s;
+    filter: grayscale(100%);
+}
+
+.btn-delete:hover {
+    transform: scale(1.2);
+    filter: grayscale(0%);
+}
+
+/* 4. MODAL E FORMULÁRIO */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #ccc;
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    background-color: #000;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--primary-color);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+}
+
+.modal-header h2 {
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.close-modal {
+    font-size: 28px;
+    color: #888;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.close-modal:hover {
+    color: #fff;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+}
