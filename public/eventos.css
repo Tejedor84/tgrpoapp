@@ -1,0 +1,131 @@
+/* ARQUIVO: eventos.css */
+
+/* --- LAYOUT DO TOPO --- */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.header-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+/* Barra de Busca */
+.search-box {
+    display: flex;
+    align-items: center;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 5px;
+    padding: 0 10px;
+    height: 40px;
+    min-width: 250px;
+}
+
+.search-box input {
+    background: transparent;
+    border: none;
+    color: #fff;
+    width: 100%;
+    outline: none;
+    font-size: 14px;
+}
+
+/* Botões do Topo (Padrão 40px) */
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.header-buttons button {
+    height: 40px;
+    padding: 0 20px;
+    border-radius: 5px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+/* Cores dos Botões */
+.btn-primary { background-color: #FFD700; color: #000; }
+.btn-primary:hover { background-color: #e6c200; transform: translateY(-2px); }
+
+/* --- TABELA (Idêntica ao Orçamentos) --- */
+.table-container {
+    background-color: transparent;
+    border: none;
+    overflow-x: auto;
+    margin-top: 10px;
+}
+
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-bottom: 20px;
+}
+
+thead tr {
+    background-color: #1a1a1a;
+    border-bottom: 2px solid #333;
+}
+
+th {
+    color: #FFD700;
+    font-weight: 700;
+    padding: 15px;
+    text-transform: uppercase;
+    font-size: 13px;
+    text-align: left;
+}
+
+td {
+    padding: 15px;
+    border-bottom: 1px solid #333;
+    color: #ddd;
+    vertical-align: middle;
+}
+
+tbody tr:hover { background-color: #111; }
+
+/* Status Badges */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: inline-block;
+}
+.status-pendente { background-color: #ffcc00; color: #000; }
+.status-confirmado { background-color: #28a745; color: #fff; }
+.status-cancelado { background-color: #dc3545; color: #fff; }
+.status-finalizado { background-color: #555; color: #fff; }
+
+/* --- MODAL --- */
+.modal-content {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+}
+
+/* Garante inputs brancos se quiser manter padrão de orçamentos, 
+   ou deixe escuro removendo isso se preferir o dark total */
+.modal-content input, 
+.modal-content select {
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #ccc;
+}

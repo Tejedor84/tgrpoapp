@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TG Log - Pendências</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="pendencias.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <main class="main-content">
+            
+            <header class="top-bar" style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center;">
+                    <a href="painel.html" class="btn-back-panel">⬅ Voltar ao Painel</a>
+                    <h2>Quadro de Pendências</h2>
+                </div>
+                <div class="user-info"><span id="user-email">Carregando...</span></div>
+            </header>
+
+            <div class="content-area">
+                <div class="page-header">
+                    <h3>Tarefas Pendentes</h3>
+                    <div class="header-controls">
+                         <div class="search-box">
+                            <span style="margin-right:5px;">🔍</span>
+                            <input type="text" id="searchInput" placeholder="Filtrar pendências...">
+                        </div>
+                        <button id="btnNewTask" class="btn-primary">+ Nova Pendência</button>
+                    </div>
+                </div>
+
+                <div class="kanban-pendencias">
+                    <div class="k-column" id="col-todo">
+                        <div class="k-header header-todo">A Fazer 🔴</div>
+                        <div class="k-content" id="list-todo"></div>
+                    </div>
+
+                    <div class="k-column" id="col-doing">
+                        <div class="k-header header-doing">Em Andamento 🟡</div>
+                        <div class="k-content" id="list-doing"></div>
+                    </div>
+
+                    <div class="k-column" id="col-done">
+                        <div class="k-header header-done">Concluído 🟢</div>
+                        <div class="k-content" id="list-done"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="modalTask" class="modal hidden">
+        <div class="modal-content">
+            <span id="closeModal" class="close-btn">&times;</span>
+            <h3 id="modalTitle" style="color: #FFD700; margin-bottom: 20px;">Nova Tarefa</h3>
+            
+            <form id="formTask">
+                <input type="hidden" id="taskId">
+                
+                <div class="input-group">
+                    <label>Descrição da Tarefa</label>
+                    <input type="text" id="taskDesc" required placeholder="Ex: Comprar cabos HDMI">
+                </div>
+
+                <div class="row-dupla" style="display: flex; gap: 20px;">
+                    <div class="input-group" style="flex:1">
+                        <label>Prioridade</label>
+                        <select id="taskPriority">
+                            <option value="Alta">Alta 🔥</option>
+                            <option value="Media">Média ⚠️</option>
+                            <option value="Baixa">Baixa 🧊</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="flex:1">
+                        <label>Responsável</label>
+                        <input type="text" id="taskOwner" placeholder="Quem vai resolver?">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Status Inicial</label>
+                    <select id="taskStatus">
+                        <option value="todo">A Fazer</option>
+                        <option value="doing">Em Andamento</option>
+                        <option value="done">Concluído</option>
+                    </select>
+                </div>
+
+                <div class="form-actions" style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                    <button type="button" id="btnCancel" class="btn-secondary" style="color:#FFD700; background:transparent; border:1px solid #FFD700;">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="autoupdate.js"></script> <script src="auth-guard.js"></script>
+    <script type="module" src="seu-arquivo-especifico.js"></script>
+    <script type="module" src="pendencias.js"></script>
+</body>
+</html>

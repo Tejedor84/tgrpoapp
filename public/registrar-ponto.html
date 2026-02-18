@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bater Ponto | TG LOG</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .ponto-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .btn-ponto {
+            height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.1em;
+            gap: 10px;
+            border: 2px solid #333;
+            background: #1E1E1E;
+            color: #fff;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        .btn-ponto:hover:not(:disabled) { 
+            border-color: #FFD700; 
+            background: #252525; 
+            transform: translateY(-2px);
+        }
+        .btn-ponto:disabled { 
+            opacity: 0.3; 
+            cursor: not-allowed; 
+            border-color: #111; 
+            filter: grayscale(1);
+        }
+        .status-hoje {
+            background: #1E1E1E;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #FFD700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .gps-indicator { 
+            font-size: 0.9em; 
+            color: #888; 
+            margin-top: 20px; 
+            text-align: center; 
+            padding: 10px;
+            border-radius: 5px;
+            background: #151515;
+        }
+        .relogio-container {
+            font-size: 2.5em;
+            color: #FFD700;
+            margin: 10px 0;
+            font-weight: bold;
+            font-family: 'monospace';
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="top-bar">
+            <div style="display:flex; align-items:center;">
+                <a href="painel.html" class="btn-back-panel">⬅ Voltar</a>
+                <h2>Registro de Ponto</h2>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="status-hoje">
+                <p id="txtUsuario" style="color: #aaa;">Verificando usuário...</p>
+                <div id="txtRelogio" class="relogio-container">00:00:00</div>
+                <p id="txtData" style="color:#888; text-transform: capitalize;">--/--/----</p>
+            </div>
+
+            <div class="ponto-grid">
+                <button id="btnEntrada" class="btn-ponto">
+                    <span style="font-size: 2em;">🌅</span> ENTRADA
+                </button>
+                <button id="btnAlmocoIda" class="btn-ponto">
+                    <span style="font-size: 2em;">🍴</span> ALMOÇO (IDA)
+                </button>
+                <button id="btnAlmocoVolta" class="btn-ponto">
+                    <span style="font-size: 2em;">🔙</span> ALMOÇO (VOLTA)
+                </button>
+                <button id="btnSaida" class="btn-ponto">
+                    <span style="font-size: 2em;">🌙</span> SAÍDA
+                </button>
+            </div>
+
+            <div id="msgGPS" class="gps-indicator">
+                🛰️ Solicitando permissão de localização...
+            </div>
+        </main>
+    </div>
+    <script src="autoupdate.js"></script> <script src="auth-guard.js"></script>
+    <script type="module" src="seu-arquivo-especifico.js"></script>
+    <script type="module" src="registrar-ponto.js"></script>
+</body>
+</html>

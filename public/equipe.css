@@ -1,0 +1,141 @@
+/* ARQUIVO: equipe.css */
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* --- CARTÃO DE MEMBRO --- */
+.member-card {
+    background-color: #1E1E1E;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    transition: transform 0.2s;
+}
+
+.member-card:hover {
+    transform: translateY(-2px);
+    border-color: #555;
+}
+
+.member-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.member-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #fff;
+    margin: 0;
+}
+
+.member-role {
+    color: #FFD700;
+    font-size: 0.9em;
+    margin-top: 2px;
+}
+
+.rating-badge {
+    background: #333;
+    color: #FFD700;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.member-details {
+    color: #aaa;
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+.member-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+/* --- SEÇÃO DE AVALIAÇÃO (MODAL) --- */
+.new-review-box {
+    background: #252525;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border: 1px dashed #444;
+}
+
+.btn-small-review {
+    background: #FFD700;
+    color: #000;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+    width: 100%;
+}
+
+/* Estrelas Interativas (CSS Trick para inverter ordem e hover) */
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse; /* Inverte para o hover funcionar da direita pra esquerda */
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.star-rating input { display: none; }
+
+.star-rating label {
+    font-size: 1.5em;
+    color: #444;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+/* Quando marcado ou hover */
+.star-rating input:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: #FFD700;
+}
+
+/* --- LISTA DE REVIEWS --- */
+.reviews-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.review-item {
+    background: #111;
+    border-left: 3px solid #FFD700;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    font-size: 0.85em;
+    color: #888;
+}
+
+.review-text {
+    color: #ddd;
+    font-style: italic;
+}

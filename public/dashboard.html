@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TG Log - Dashboard</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <header class="top-bar">
+            <div style="display: flex; align-items: center;">
+                <a href="painel.html" class="btn-back-panel">⬅ Voltar ao Painel</a>
+                <h2>Visão Geral</h2>
+            </div>
+            <div class="user-info">
+                <span id="userEmail">Carregando...</span>
+            </div>
+        </header>
+
+        <main class="main-content">
+            
+            <div class="kpi-grid">
+                
+                <div class="kpi-card alert" onclick="window.location.href='pendencias.html'" style="cursor: pointer;">
+                    <div class="icon">⚠️</div>
+                    <div class="info">
+                        <h3>Pendências</h3>
+                        <p id="countPendencias">Carregando...</p>
+                        <span class="sub-text">Clique para resolver</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card primary" onclick="window.location.href='eventos.html'" style="cursor: pointer;">
+                    <div class="icon">📅</div>
+                    <div class="info">
+                        <h3>Próximos Eventos</h3>
+                        <p id="countEventos">Carregando...</p>
+                        <span class="sub-text">Nos próximos 30 dias</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card info">
+                    <div class="icon" id="weatherIcon">⛅</div>
+                    <div class="info">
+                        <h3 id="weatherCity">Clima Local</h3>
+                        <p id="weatherTemp">--°C</p>
+                        <span class="sub-text" id="weatherDesc">Verificando...</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="content-grid">
+                
+                <section class="panel-section">
+                    <div class="section-header">
+                        <h3>📆 Próximos Eventos</h3>
+                        <button class="btn-small" onclick="window.location.href='eventos.html'">Ver Todos</button>
+                    </div>
+                    <ul id="eventList" class="event-list">
+                        <li class="loading-item">Buscando agenda...</li>
+                    </ul>
+                </section>
+
+                <aside class="panel-sidebar">
+                    <div class="quick-actions">
+                        <h3>⚡ Acesso Rápido</h3>
+                        
+                        <button onclick="window.location.href='cronograma.html'">Novo Cronograma</button>
+                        <button onclick="window.location.href='orcamentos.html'">Gerar Orçamento</button>
+                        
+                        <button onclick="window.location.href='clientes.html'" style="margin-top: 10px; background-color: #2c3e50;">👥 Gerenciar Clientes</button>
+                        <button onclick="window.location.href='agencias.html'" style="background-color: #2c3e50;">🏢 Gerenciar Agências</button>
+                        <button onclick="window.location.href='equipamentos.html'" style="background-color: #2c3e50;">🔊 Gerenciar Equipamentos</button>
+                        
+                        <button onclick="window.location.href='ponto.html'" style="margin-top: 10px;">⏰ Bater Ponto</button>
+                    </div>
+
+                    <div class="system-status">
+                        <h4>Status do Sistema</h4>
+                        <p>🟢 Online e Operacional</p>
+                        <p id="systemVersion" style="font-size: 0.85em; color: #666; margin-top: 5px;">Versão: 1.14</p>
+                    </div>
+                </aside>
+
+            </div>
+
+        </main>
+    </div>
+
+    <script src="autoupdate.js"></script> 
+    <script src="auth-guard.js"></script>
+    <script type="module" src="dashboard.js"></script>
+    
+</body>
+</html>

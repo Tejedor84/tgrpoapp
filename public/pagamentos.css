@@ -1,0 +1,172 @@
+.split-view {
+    display: flex;
+    gap: 20px;
+    height: calc(100vh - 120px);
+}
+
+.form-panel {
+    flex: 1;
+    background-color: #0a0a0a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 20px;
+    min-width: 300px;
+    max-width: 400px;
+    height: fit-content;
+}
+
+.list-panel {
+    flex: 2;
+    background-color: #0a0a0a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.row-dupla {
+    display: flex;
+    gap: 10px;
+}
+
+.row-dupla .input-group {
+    flex: 1;
+}
+
+.full-width {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.btn-primary {
+    background-color: #FFD700;
+    color: #000;
+    border: none;
+    padding: 12px;
+    border-radius: 5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #e6c200;
+}
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.table-container-scroll {
+    flex: 1;
+    overflow-y: auto;
+    border: 1px solid #333;
+    border-radius: 5px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+thead {
+    background-color: #1a1a1a;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #333;
+    font-size: 14px;
+}
+
+th {
+    color: #FFD700;
+}
+
+td {
+    color: #ddd;
+}
+
+tbody tr:hover {
+    background-color: #111;
+}
+
+.val-green {
+    color: #4dff4d;
+    font-weight: bold;
+}
+
+.val-red {
+    color: #ff4d4d;
+    font-weight: bold;
+}
+
+.btn-pay {
+    background-color: transparent;
+    border: 1px solid #4dff4d;
+    color: #4dff4d;
+    padding: 2px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.btn-pay:hover {
+    background-color: #4dff4d;
+    color: #000;
+}
+
+.btn-del {
+    background-color: transparent;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.btn-del:hover {
+    color: red;
+}
+
+.total-box {
+    text-align: right;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #1a1a1a;
+    border-radius: 5px;
+    border: 1px solid #333;
+}
+
+.total-value {
+    color: #FFD700;
+    font-size: 20px;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.filter-box select {
+    padding: 5px;
+    background: #000;
+    color: #fff;
+    border: 1px solid #333;
+    border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+    .split-view {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .form-panel {
+        max-width: 100%;
+    }
+}

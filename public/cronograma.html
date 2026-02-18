@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TG Log - Cronograma</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="cronograma.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <main class="main-content">
+            
+            <header class="top-bar">
+                <div style="display: flex; align-items: center;">
+                    <a href="painel.html" class="btn-back-panel">⬅ Voltar ao Painel</a>
+                    <h2>Agenda Logística</h2>
+                </div>
+                <div class="user-info">
+                    <span id="user-email">Carregando...</span>
+                </div>
+            </header>
+
+            <div class="toolbar-section">
+                
+                <div class="toolbar-filters">
+                    <div class="input-wrapper">
+                        <label>Filtrar Data</label>
+                        <input type="date" id="filterDate">
+                    </div>
+                    <div class="input-wrapper" style="flex: 1;">
+                        <label>Buscar Texto</label>
+                        <input type="text" id="filterText" placeholder="Nome, local, equipe...">
+                    </div>
+                </div>
+
+                <div class="toolbar-actions">
+                    <button id="btnHistory" class="btn-secondary">📜 Histórico</button>
+                    <button id="btnCopy" class="btn-secondary" title="Copiar p/ WhatsApp">📋 Copiar</button>
+                    <button id="btnAdd" class="btn-primary">+ Nova Atividade</button>
+                </div>
+            </div>
+
+            <div id="cronogramaGrid" class="cronograma-grid">
+                <p class="loading-msg">Carregando agenda...</p>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="modalTask" class="modal hidden">
+        <div class="modal-content">
+            <span id="closeModal" class="close-btn">&times;</span>
+            <h3 id="modalTitle" style="color: #FFD700; margin-bottom: 20px;">Atividade</h3>
+            
+            <form id="formTask">
+                <input type="hidden" id="taskId">
+                
+                <div class="row-dupla">
+                    <div class="input-group" style="flex: 1;">
+                        <label>Data</label>
+                        <input type="date" id="inpDate" required>
+                    </div>
+                    
+                    <div class="input-group" style="flex: 1;">
+                        <label>Hora</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="time" id="inpTime" style="flex:1;">
+                            <div style="display: flex; align-items: center; gap: 5px; white-space: nowrap;">
+                                <input type="checkbox" id="chkNoTime" style="width: auto;">
+                                <label for="chkNoTime" style="margin:0; font-size:0.9em; cursor:pointer;">A definir</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Título da Atividade</label>
+                    <input type="text" id="inpTitle" required placeholder="Ex: Montagem de Palco">
+                </div>
+
+                <div class="input-group">
+                    <label>Local</label>
+                    <input type="text" id="inpLocal" placeholder="Local do evento ou serviço">
+                </div>
+
+                <div class="input-group">
+                    <label>Equipe Responsável</label>
+                    <textarea id="inpTeam" rows="3" placeholder="Digite os nomes (Tecle Enter para pular linha)..."></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label style="color: #ff4d4d; font-weight: bold;">Pendências (Alerta)</label>
+                    <input type="text" id="inpPending" placeholder="O que falta fazer? (Deixe vazio se ok)" style="border-color: #ff4d4d;">
+                </div>
+
+                <div class="input-group">
+                    <label>Detalhes / Observações</label>
+                    <textarea id="inpDetails" rows="3"></textarea>
+                </div>
+
+                <div class="comentarios-section">
+                    <h3><i class="fas fa-comments"></i> Comentários da Atividade</h3>
+                    
+                    <div id="lista-comentarios" class="comentarios-lista">
+                        <div class="empty-state">Salve a atividade para comentar.</div>
+                    </div>
+
+                    <div class="comentarios-input-area" style="display: none;">
+                        <input type="text" id="novo-comentario" placeholder="Escreva um comentário..." autocomplete="off">
+                        <button type="button" onclick="window.enviarComentario()" class="btn-send"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+                <div class="form-actions" style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                    <button type="button" id="btnCancel" class="btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="autoupdate.js"></script> <script src="auth-guard.js"></script>
+    <script type="module" src="cronograma.js"></script>
+</body>
+</html>

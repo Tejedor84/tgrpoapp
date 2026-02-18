@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TG Pro - Orçamento</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="orcamentos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="workspace">
+        
+        <div class="toolbar no-print">
+            <div class="toolbar-left">
+                <button onclick="window.location.href='painel.html'" class="btn-sm">⬅ Voltar</button>
+                <button onclick="window.print()" class="btn-sm">🖨️ Imprimir / PDF</button>
+                <button onclick="salvarOrcamento()" class="btn-sm" style="background: #28a745; color: white; border: none;">💾 Salvar</button>
+            </div>
+            <div class="status-control">
+                <label>STATUS:</label>
+                <select id="statusOrcamento">
+                    <option value="Rascunho">Rascunho</option>
+                    <option value="Enviado">Enviado</option>
+                    <option value="Aprovado">Aprovado</option>
+                    <option value="Cancelado">Cancelado</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="paper-sheet" id="orcamento-paper">
+            
+            <div class="sheet-header">
+                <div class="company-details">
+                    <img src="logo.png" alt="Logo" class="print-logo">
+                </div>
+                <div class="header-right">
+                    <div class="attendant-info">
+                        <div class="info-line">
+                            <label>Atendimento:</label>
+                            <input type="text" class="input-minimal" id="nomeAtendente" placeholder="Seu Nome">
+                        </div>
+                        <div class="info-line">
+                            <label>Email:</label>
+                            <input type="text" class="input-minimal" id="emailAtendente" placeholder="seuemail@tgpro.com">
+                        </div>
+                        <div class="info-line">
+                            <label>Whatsapp:</label>
+                            <input type="text" class="input-minimal" id="telAtendente" placeholder="(11) 99999-9999">
+                        </div>
+                    </div>
+                    <a href="https://www.tglogistica.com.br" class="site-link">WWW.TGLOGISTICA.COM.BR</a>
+                </div>
+            </div>
+
+            <div class="proposal-bar">
+                <div class="prop-item">
+                    <label>PROPOSTA Nº</label>
+                    <input type="text" id="numProposta" placeholder="0000/2024">
+                </div>
+                <div class="prop-item right">
+                    <label>DATA</label>
+                    <input type="text" id="dataProposta" placeholder="DD/MM/AAAA">
+                </div>
+            </div>
+
+            <div class="client-section">
+                <div class="details-grid">
+                    <div class="col-left">
+                        <div class="input-row">
+                            <label>CLIENTE:</label>
+                            <div class="searchable-wrapper" style="flex:1;">
+                                <input type="text" class="paper-input searchable-input" id="buscaCliente" placeholder="Buscar Cliente..." onkeyup="buscarClienteKeyUp(this)" autocomplete="off">
+                                <div class="searchable-list" id="listaClientes"></div>
+                            </div>
+                            <span class="btn-plus-simple no-print" onclick="window.open('clientes.html', '_blank')" title="Novo Cliente">+</span>
+                        </div>
+                        <div class="input-row">
+                            <label>SOLICITANTE:</label>
+                            <input type="text" class="paper-input" id="nomeSolicitante">
+                        </div>
+                        <div class="input-row">
+                            <label>EMAIL:</label>
+                            <input type="text" class="paper-input" id="emailCliente">
+                        </div>
+                    </div>
+                    <div class="col-right">
+                        <div class="input-row">
+                            <label>CNPJ:</label>
+                            <input type="text" class="paper-input" id="cnpjCliente">
+                        </div>
+                        <div class="input-row">
+                            <label>TELEFONE:</label>
+                            <input type="text" class="paper-input" id="telCliente">
+                        </div>
+                        <div class="input-row">
+                            <label>CIDADE:</label>
+                            <input type="text" class="paper-input" id="cidadeCliente">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-row" style="margin-top: 10px;">
+                    <label>EVENTO:</label>
+                    <input type="text" class="paper-input" id="nomeEvento" style="font-weight: bold;">
+                </div>
+                <div class="input-row">
+                    <label>LOCAL:</label>
+                    <input type="text" class="paper-input" id="localEvento">
+                </div>
+                <div class="details-grid" style="margin-top: 5px;">
+                    <div class="col-left">
+                        <div class="input-row">
+                            <label>MONTAGEM:</label>
+                            <input type="text" class="paper-input" id="dataMontagem" placeholder="DD/MM - 00h">
+                        </div>
+                        <div class="input-row">
+                            <label>INÍCIO:</label>
+                            <input type="text" class="paper-input" id="dataInicio" placeholder="DD/MM - 00h">
+                        </div>
+                    </div>
+                    <div class="col-right">
+                        <div class="input-row">
+                            <label>TÉRMINO:</label>
+                            <input type="text" class="paper-input" id="dataTermino" placeholder="DD/MM - 00h">
+                        </div>
+                        <div class="input-row">
+                            <label>DESMONTAGEM:</label>
+                            <input type="text" class="paper-input" id="dataDesmontagem" placeholder="DD/MM - 00h">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-sm no-print" onclick="adicionarSala()">+ ADICIONAR SALA / AMBIENTE</button>
+
+            <div id="containerSalas" class="items-container">
+                </div>
+
+            <div class="totals-section">
+                <div class="total-row">
+                    <span>Subtotal:</span>
+                    <span id="labelSubtotal">R$ 0,00</span>
+                </div>
+                <div class="total-row">
+                    <span>Desconto:</span>
+                    <span style="display:flex; align-items:center; gap:5px;">
+                        R$ <input type="number" id="inputDesconto" value="0" style="width:80px; text-align:right; border:none; border-bottom:1px solid #ccc;" onchange="calcularTotalGeral()">
+                    </span>
+                </div>
+                <div class="total-row final-total">
+                    <span>TOTAL:</span>
+                    <span id="labelTotalFinal">R$ 0,00</span>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <label style="font-weight:bold; font-size:12px;">OBSERVAÇÕES E CONDIÇÕES DE PAGAMENTO:</label>
+                <textarea id="obsGerais" rows="5"></textarea>
+            </div>
+
+        </div> </div>
+
+    <div id="modal-catalogo-completo" class="modal-catalog-overlay">
+        <div class="modal-catalog-box">
+            <div class="modal-header-cat">
+                <h3><i class="fas fa-box-open"></i> Catálogo de Equipamentos</h3>
+                <button class="btn-close-modal" onclick="fecharModalCatalogo()">&times;</button>
+            </div>
+            
+            <div class="modal-search-bar">
+                <i class="fas fa-search" style="font-size: 20px; color: #ccc; align-self: center;"></i>
+                <input type="text" id="inputBuscaModal" placeholder="Digite para filtrar (ex: Painel, LED, Cabo...)" onkeyup="filtrarTabelaCatalogo()">
+            </div>
+
+            <div class="modal-body-cat">
+                <table class="catalog-table">
+                    <thead>
+                        <tr>
+                            <th>Equipamento</th>
+                            <th>Categoria</th>
+                            <th style="text-align: right;">Preço Diária</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyCatalogo">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="firebase-init.js"></script>
+    <script src="auth-guard.js"></script>
+    <script type="module" src="orcamentos.js"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Agências - TG Log</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="agencias.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <header class="top-bar">
+            <div style="display: flex; align-items: center;">
+                <a href="dashboard.html" class="btn-back-panel">⬅ Voltar ao Painel</a>
+                <h2>Gestão de Agências</h2>
+            </div>
+            <div class="user-info">
+                <span id="user-email">Carregando...</span>
+            </div>
+        </header>
+
+        <main class="workspace">
+            
+            <div class="form-container">
+                <h3>Nova / Editar Agência</h3>
+                <input type="hidden" id="editId"> <div class="form-row">
+                    <div class="form-group" style="flex: 2;">
+                        <label>Nome da Agência:</label>
+                        <input type="text" id="inpNomeAgencia" placeholder="Razão Social ou Nome Fantasia">
+                    </div>
+                    <div class="form-group" style="flex: 3;">
+                        <label>Endereço Completo:</label>
+                        <input type="text" id="inpEndereco" placeholder="Rua, Número, Bairro, Cidade...">
+                    </div>
+                </div>
+
+                <div class="contacts-section">
+                    <div class="section-header">
+                        <h4>Contatos / Produtores</h4>
+                        <button class="btn-add-contact" onclick="adicionarLinhaContato()">+ Adicionar Contato</button>
+                    </div>
+                    
+                    <div id="contactsList"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button id="btnSalvar" class="btn-primary">💾 Salvar Agência</button>
+                    <button id="btnCancelar" class="btn-secondary" style="display: none;">Cancelar Edição</button>
+                </div>
+            </div>
+
+            <div class="list-container">
+                <h3>Agências Cadastradas</h3>
+                <div class="search-bar">
+                    <input type="text" id="inpBusca" placeholder="🔍 Buscar por nome da agência...">
+                </div>
+                
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Agência</th>
+                            <th>Produtores / Contatos</th>
+                            <th>Endereço</th>
+                            <th style="width: 100px;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="autoupdate.js"></script>
+    <script type="module" src="agencias.js"></script>
+</body>
+</html>

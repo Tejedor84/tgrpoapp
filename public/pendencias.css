@@ -1,0 +1,97 @@
+/* ARQUIVO: pendencias.css */
+
+.page-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;
+}
+
+.header-actions {
+    display: flex; gap: 10px;
+}
+
+.filter-select {
+    padding: 10px; background: #000; color: #fff; 
+    border: 1px solid #333; border-radius: 5px; outline: none;
+}
+
+.btn-primary {
+    background-color: #FFD700; color: #000; border: none; padding: 10px 20px;
+    border-radius: 5px; font-weight: 700; cursor: pointer; transition: 0.3s;
+}
+.btn-primary:hover { background-color: #e6c200; }
+
+.table-container {
+    overflow-x: auto; border: 1px solid #333; border-radius: 8px;
+}
+table { width: 100%; border-collapse: collapse; text-align: left; }
+thead { background-color: #1a1a1a; }
+th, td { padding: 15px; border-bottom: 1px solid #333; font-size: 14px; }
+th { color: #FFD700; }
+td { color: #ddd; }
+tbody tr:hover { background-color: #0f0f0f; }
+
+/* Status Badges */
+.status-badge {
+    padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; text-transform: uppercase;
+}
+.status-pendente { background-color: rgba(255, 77, 77, 0.2); color: #ff4d4d; border: 1px solid #ff4d4d; }
+.status-andamento { background-color: rgba(255, 215, 0, 0.2); color: #FFD700; border: 1px solid #FFD700; }
+.status-concluido { background-color: rgba(77, 255, 77, 0.2); color: #4dff4d; border: 1px solid #4dff4d; }
+
+/* Botões de Ação na Tabela */
+.btn-icon {
+    background: transparent; border: none; font-size: 16px; cursor: pointer; margin-right: 5px;
+}
+.btn-icon:hover { transform: scale(1.2); }
+
+/* Modal e Formulário */
+.row-dupla { display: flex; gap: 15px; }
+.row-dupla .input-group { flex: 1; }
+
+/* Histórico de Comentários */
+.history-box {
+    background-color: #151515;
+    border: 1px solid #333;
+    border-radius: 5px;
+    padding: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+}
+
+.comment-item {
+    background-color: #222;
+    padding: 8px;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    border-left: 3px solid #555;
+}
+.comment-meta {
+    font-size: 10px; color: #888; margin-bottom: 3px; display: flex; justify-content: space-between;
+}
+.comment-text {
+    font-size: 13px; color: #fff; white-space: pre-line;
+}
+.comment-user { color: #FFD700; font-weight: bold; }
+
+textarea {
+    width: 100%; padding: 10px; background-color: #1a1a1a;
+    border: 1px solid #333; border-radius: 5px; color: #fff;
+    resize: vertical; outline: none; font-family: 'Roboto', sans-serif;
+}
+textarea:focus { border-color: #FFD700; }
+
+.modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex; justify-content: center; align-items: center; z-index: 1000;
+}
+.modal-content {
+    background-color: #0a0a0a; border: 1px solid #FFD700;
+    padding: 30px; border-radius: 10px; width: 100%; max-width: 600px;
+    position: relative; animation: slideDown 0.3s ease;
+}
+@keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.close-btn { position: absolute; top: 15px; right: 20px; font-size: 24px; color: #fff; cursor: pointer; }
+.form-actions { margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; }
+.btn-secondary { background-color: transparent; border: 1px solid #333; color: #fff; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+.btn-secondary:hover { background-color: #1a1a1a; }

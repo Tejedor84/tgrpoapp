@@ -1,0 +1,81 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "cronograma",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "data",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "hora",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "cronograma",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "data",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "hora",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "notificacoes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "destinatario",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "data",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "registros_ponto",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "funcionarioId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "timestamp_entrada",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    }
+  ],
+  "fieldOverrides": []
+}

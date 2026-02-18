@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Equipe | TG LOG</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="equipe.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <header class="top-bar">
+            <div style="display: flex; align-items: center;">
+                <a href="painel.html" class="btn-back-panel">⬅ Voltar</a>
+                <h2>Equipe e Desempenho</h2>
+            </div>
+            <button id="btnAddMember" class="btn-primary">+ Novo Colaborador</button>
+        </header>
+
+        <main class="main-content">
+            
+            <div id="equipeGrid" class="team-grid">
+                <p class="loading-msg">Carregando equipe...</p>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="modalMember" class="modal hidden">
+        <div class="modal-content">
+            <span id="closeModal" class="close-btn">&times;</span>
+            <h3 id="modalTitle">Dados do Colaborador</h3>
+            
+            <form id="formMember">
+                <input type="hidden" id="memberId">
+                
+                <div class="input-group">
+                    <label>Nome Completo</label>
+                    <input type="text" id="inpName" required placeholder="Ex: João da Silva">
+                </div>
+
+                <div class="row-dupla">
+                    <div class="input-group">
+                        <label>Cargo / Função</label>
+                        <input type="text" id="inpRole" required placeholder="Ex: Técnico de Som">
+                    </div>
+                    <div class="input-group">
+                        <label>Telefone / WhatsApp</label>
+                        <input type="tel" id="inpPhone" placeholder="(11) 99999-9999">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>E-mail (Opcional)</label>
+                    <input type="email" id="inpEmailMember" placeholder="contato@email.com">
+                </div>
+
+                <div class="input-group">
+                    <label>Dados Bancários / PIX</label>
+                    <textarea id="inpBankInfo" rows="2" placeholder="Chave PIX ou Conta"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" id="btnCancel" class="btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar</button>
+                </div>
+            </form>
+            
+            <div id="reviewsSection" style="display: none; margin-top: 30px; border-top: 1px solid #333; padding-top: 20px;">
+                <h4 style="color: #FFD700;">Avaliações de Desempenho</h4>
+                
+                <div class="new-review-box">
+                    <label>Sua Nota:</label>
+                    <div class="star-rating">
+                        <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
+                        <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+                        <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+                        <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+                        <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+                    </div>
+                    
+                    <textarea id="inpReviewComment" placeholder="Justificativa da nota..." rows="2" style="width:100%; margin-top:10px;"></textarea>
+                    <button id="btnSaveReview" class="btn-small-review">Enviar Avaliação</button>
+                </div>
+
+                <div id="reviewsList" class="reviews-list">
+                    </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="autoupdate.js"></script> <script src="auth-guard.js"></script>
+    <script type="module" src="equipe.js"></script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TG Log - Pagamentos</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="pagamentos.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <main class="main-content">
+            
+            <header class="top-bar" style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center;">
+                    <a href="painel.html" class="btn-back-panel">⬅ Voltar ao Painel</a>
+                    <h2>Controle Financeiro</h2>
+                </div>
+                <div class="user-info"><span id="user-email">Carregando...</span></div>
+            </header>
+
+            <div class="content-area">
+                <div class="page-header">
+                    <h3>Lista de Pagamentos</h3>
+                    
+                    <div class="header-controls">
+                        <div class="search-box">
+                            <span style="margin-right:5px;">🔍</span>
+                            <input type="text" id="searchInput" placeholder="Buscar pagamento...">
+                        </div>
+                        <button id="btnNewPayment" class="btn-primary">+ Novo Pagamento</button>
+                    </div>
+                </div>
+
+                <div class="filter-tabs" style="margin-bottom: 20px; display: flex; gap: 10px;">
+                    <button class="btn-secondary" onclick="filtrarStatus('todos')">Todos</button>
+                    <button class="btn-secondary" onclick="filtrarStatus('pendente')">Pendentes</button>
+                    <button class="btn-secondary" onclick="filtrarStatus('pago')">Pagos</button>
+                    <button class="btn-secondary" onclick="filtrarStatus('atrasado')">Atrasados</button>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Vencimento</th>
+                                <th>Descrição</th>
+                                <th>Categoria</th>
+                                <th>Valor</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentsList">
+                            <tr><td colspan="6" align="center">Carregando...</td></tr>
+                        </tbody>
+                        <tfoot>
+                            <tr style="background-color: #222; font-weight: bold;">
+                                <td colspan="3" align="right">TOTAL DO MÊS:</td>
+                                <td id="totalMonthValue">R$ 0,00</td>
+                                <td colspan="2"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="modalPayment" class="modal hidden">
+        <div class="modal-content">
+            <span id="closeModal" class="close-btn">&times;</span>
+            <h3 id="modalTitle" style="color: #FFD700; margin-bottom: 20px;">Novo Pagamento</h3>
+            
+            <form id="formPayment">
+                <input type="hidden" id="paymentId">
+                
+                <div class="input-group">
+                    <label>Descrição</label>
+                    <input type="text" id="payDesc" required placeholder="Ex: Pagamento Freelancer Som">
+                </div>
+
+                <div class="row-dupla" style="display: flex; gap: 20px;">
+                    <div class="input-group" style="flex:1">
+                        <label>Valor (R$)</label>
+                        <input type="number" id="payValue" step="0.01" required>
+                    </div>
+                    <div class="input-group" style="flex:1">
+                        <label>Data Vencimento</label>
+                        <input type="date" id="payDate" required>
+                    </div>
+                </div>
+
+                <div class="row-dupla" style="display: flex; gap: 20px;">
+                    <div class="input-group" style="flex:1">
+                        <label>Categoria</label>
+                        <select id="payCategory">
+                            <option value="Equipe">Equipe / Freelancers</option>
+                            <option value="Equipamento">Locação Equipamento</option>
+                            <option value="Transporte">Transporte / Logística</option>
+                            <option value="Alimentacao">Alimentação</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="flex:1">
+                        <label>Status</label>
+                        <select id="payStatus">
+                            <option value="Pendente">Pendente</option>
+                            <option value="Pago">Pago</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Observações</label>
+                    <textarea id="payObs" rows="2"></textarea>
+                </div>
+
+                <div class="form-actions" style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                    <button type="button" id="btnCancel" class="btn-secondary" style="color:#FFD700; background:transparent; border:1px solid #FFD700;">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="autoupdate.js"></script> <script src="auth-guard.js"></script>
+    <script type="module" src="seu-arquivo-especifico.js"></script>
+    <script type="module" src="pagamentos.js"></script>
+</body>
+</html>

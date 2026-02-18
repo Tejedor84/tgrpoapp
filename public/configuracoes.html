@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TG Log - Configurações</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="configuracoes.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <main class="main-content">
+            
+            <header class="top-bar" style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center;">
+                    <a href="painel.html" class="btn-back-panel">⬅ Voltar ao Painel</a>
+                    <h2>Configurações do Sistema</h2>
+                </div>
+                <div class="user-info"><span id="user-email">Carregando...</span></div>
+            </header>
+
+            <div class="content-area">
+                <div class="config-section">
+                    <h3>Perfil da Empresa</h3>
+                    <div class="input-group">
+                        <label>Nome da Empresa (Para Orçamentos)</label>
+                        <input type="text" id="confEmpresa" placeholder="TG LOG Eventos">
+                    </div>
+                    <div class="input-group">
+                        <label>CNPJ</label>
+                        <input type="text" id="confCnpj" placeholder="00.000.000/0001-00">
+                    </div>
+                    <button id="btnSaveCompany" class="btn-primary" style="width:auto; margin-top:10px;">Salvar Dados</button>
+                </div>
+
+                <div class="config-section" style="margin-top:30px;">
+                    <h3>Backup e Dados</h3>
+                    <p style="color:#888; margin-bottom:15px;">Ações sensíveis de administração.</p>
+                    <button id="btnBackup" class="btn-secondary">📥 Baixar Backup (JSON)</button>
+                    <button id="btnClearCache" class="btn-secondary" style="border-color:#ff4d4d; color:#ff4d4d;">🗑️ Limpar Cache Local</button>
+                </div>
+                
+                <div class="config-section" style="margin-top:30px;">
+                    <h3>Sobre o Sistema</h3>
+                    <p>Versão Atual: <strong style="color:#FFD700;">1.0 (TG PRO)</strong></p>
+                    <p style="font-size:0.9em; color:#666;">Desenvolvido para Gestão Logística.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="autoupdate.js"></script> <script src="auth-guard.js"></script>
+    <script type="module" src="configuracoes.js"></script>
+</body>
+</html>

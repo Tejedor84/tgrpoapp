@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Equipamentos - TG Log</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="equipamentos.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <header class="top-bar">
+            <div style="display: flex; align-items: center;">
+                <a href="dashboard.html" class="btn-back-panel">⬅ Voltar ao Painel</a>
+                <h2>Gestão de Equipamentos</h2>
+            </div>
+            <div class="user-info">
+                <span id="user-email">Carregando...</span>
+            </div>
+        </header>
+
+        <main class="workspace">
+            
+            <div class="form-container">
+                <h3>Novo / Editar Equipamento</h3>
+                <input type="hidden" id="editId">
+
+                <div class="form-row">
+                    <div class="form-group" style="flex: 2;">
+                        <label>Nome do Equipamento:</label>
+                        <input type="text" id="inpNome" placeholder="Ex: Microfone Shure SM58">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Categoria:</label>
+                        <select id="selCategoria">
+                            <option value="SONORIZAÇÃO">Sonorização</option>
+                            <option value="ILUMINAÇÃO">Iluminação</option>
+                            <option value="IMAGEM">Imagem</option>
+                            <option value="ESTRUTURA">Estrutura / Box Truss</option>
+                            <option value="ACESSÓRIOS">Acessórios / Cabos</option>
+                            <option value="STREAMING">Streaming / TI</option>
+                            <option value="MÃO DE OBRA">Mão de Obra</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Qtd. Estoque:</label>
+                        <input type="number" id="inpQtd" placeholder="0" min="0">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Valor de Locação (R$):</label>
+                        <input type="number" id="inpValor" placeholder="0.00" step="0.01">
+                    </div>
+                    <div class="form-group" style="flex: 2;">
+                        <label>Local de Armazenagem:</label>
+                        <input type="text" id="inpLocalizacao" placeholder="Ex: Prateleira A1, Case 04...">
+                    </div>
+                </div>
+
+                <div class="contacts-section">
+                    <div class="section-header">
+                        <h4>Itens Inclusos / Acessórios (Kit)</h4>
+                        <button class="btn-add-contact" onclick="adicionarLinhaAcessorio()">+ Adicionar Item</button>
+                    </div>
+                    <div id="accessoriesList"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button id="btnSalvar" class="btn-primary">💾 Salvar Equipamento</button>
+                    <button id="btnCancelar" class="btn-secondary" style="display: none;">Cancelar</button>
+                </div>
+            </div>
+
+            <div class="list-container">
+                <h3>Estoque Atual</h3>
+                <div class="search-bar">
+                    <input type="text" id="inpBusca" placeholder="🔍 Buscar equipamento...">
+                </div>
+                
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Equipamento</th>
+                            <th>Categoria</th>
+                            <th style="text-align: center;">Qtd</th>
+                            <th style="text-align: right;">Valor (R$)</th>
+                            <th style="width: 100px;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="autoupdate.js"></script>
+    <script type="module" src="equipamentos.js"></script>
+</body>
+</html>

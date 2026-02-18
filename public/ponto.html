@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TG Log - Controle de Ponto</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="ponto.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-area">
+                <img src="logo.png" alt="TG Log Logo" class="logo">
+                <h1>Controle de Ponto</h1>
+            </div>
+            <div class="user-info">
+                <span id="user-email">...</span>
+                <button onclick="window.location.href='painel.html'" class="btn-secondary">Voltar</button>
+            </div>
+        </header>
+
+        <main>
+            <section class="controls">
+                <div class="filters">
+                    <div class="filter-group">
+                        <label>Colaborador:</label>
+                        <select id="filterUser">
+                            <option value="">Todos os Colaboradores</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Mês/Ano:</label>
+                        <input type="month" id="filterMonth">
+                    </div>
+                </div>
+                <div class="actions">
+                    <button id="btnManualLaunch" class="btn-primary">+ Lançamento Manual</button>
+                </div>
+            </section>
+
+            <section class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Colaborador</th>
+                            <th>Entrada</th>
+                            <th>Saída</th>
+                            <th>Status</th>
+                            <th>Obs</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pontoBody">
+                        </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <div id="modalPonto" class="modal hidden">
+        <div class="modal-content">
+            <h2 id="modalTitle">Lançamento de Ponto</h2>
+            <form id="formPonto">
+                <input type="hidden" id="pontoId">
+                
+                <div class="input-group">
+                    <label>Colaborador</label>
+                    <select id="inpUser" required></select>
+                </div>
+
+                <div class="row">
+                    <div class="input-group">
+                        <label>Data</label>
+                        <input type="date" id="inpDate" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Tipo de Registro</label>
+                        <select id="inpStatus">
+                            <option value="Trabalho">Trabalho Normal</option>
+                            <option value="Folga">Folga</option>
+                            <option value="Descanso">Descanso</option>
+                            <option value="Feriado">Feriado</option>
+                            <option value="Falta">Falta</option>
+                            <option value="Atestado">Atestado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row" id="timeFields">
+                    <div class="input-group">
+                        <label>Horário Entrada</label>
+                        <input type="time" id="inpEntry">
+                    </div>
+                    <div class="input-group">
+                        <label>Horário Saída</label>
+                        <input type="time" id="inpExit">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Observações</label>
+                    <textarea id="inpObs" rows="3" placeholder="Ex: Viagem, feriado trabalhado, etc..."></textarea>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="button" id="btnCancel" class="btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar Registro</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="autoupdate.js"></script> <script src="auth-guard.js"></script>
+    <script type="module" src="seu-arquivo-especifico.js"></script>
+    <script src="auth-guard.js"></script>
+    <script type="module" src="ponto.js"></script>
+</body>
+</html>

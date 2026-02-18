@@ -1,0 +1,94 @@
+/* ARQUIVO: ponto.css */
+
+/* A tabela herda o padrão do style.css, aqui ajustamos apenas detalhes específicos */
+
+.table-container {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+th {
+    letter-spacing: 1px;
+}
+
+/* Badges de Status Específicos do Ponto */
+.badge-status {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.Trabalho { background: #2ecc71; color: #000; }
+.Folga { background: #3498db; color: #fff; }
+.Descanso { background: #9b59b6; color: #fff; }
+.Feriado { background: #f1c40f; color: #000; }
+.Falta { background: #e74c3c; color: #fff; }
+.Atestado { background: #95a5a6; color: #000; }
+
+.obs-cell {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-style: italic;
+    color: #aaa;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+    background: #1e1e1e;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    margin-bottom: 20px;
+}
+
+.filters {
+    display: flex;
+    gap: 15px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filter-group label {
+    font-size: 0.8rem;
+    color: #FFD700;
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+}
+
+.row .input-group { flex: 1; }
+
+.btn-edit, .btn-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: transform 0.2s;
+}
+
+.btn-edit:hover, .btn-delete:hover {
+    transform: scale(1.2);
+}
+
+@media (max-width: 768px) {
+    .controls {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .filters {
+        flex-direction: column;
+        width: 100%;
+    }
+}

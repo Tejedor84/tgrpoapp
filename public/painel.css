@@ -1,0 +1,182 @@
+/* ARQUIVO: painel.css (Versão Compacta) */
+
+body {
+    background-color: #000;
+    color: #e0e0e0;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    /* Garante que se estourar a altura, aparece a barra de rolagem */
+    overflow-y: auto; 
+}
+
+/* Header mais fino */
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 30px; /* Reduzi o padding vertical */
+    background-color: #111;
+    border-bottom: 2px solid #FFD700;
+    position: sticky; /* Mantém o topo fixo se rolar */
+    top: 0;
+    z-index: 100;
+}
+
+.panel-logo {
+    height: 40px; /* Logo um pouco menor */
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 0.9em; /* Texto um pouco menor */
+}
+
+.role-badge {
+    background-color: #333;
+    color: #FFD700;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75em;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: 1px solid #FFD700;
+}
+
+.btn-logout-panel {
+    background: transparent;
+    border: 1px solid #555;
+    color: #aaa;
+    padding: 4px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 0.85em;
+}
+
+.btn-logout-panel:hover {
+    border-color: #ef5350;
+    color: #ef5350;
+}
+
+/* Container Principal */
+.panel-container {
+    max-width: 1200px;
+    margin: 20px auto; /* Margem menor */
+    padding: 0 20px 40px 20px; /* Padding no fundo para não colar na borda */
+}
+
+/* Título da Seção */
+.panel-container h2 {
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    color: #FFD700;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+}
+
+/* Grid Compacto */
+.grid-modules {
+    display: grid;
+    /* Reduzi a largura mínima de 180px para 130px */
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
+    gap: 12px; /* Espaço entre cartões menor */
+}
+
+/* Cartões Compactos */
+.module-card {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 15px; /* Padding interno menor */
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s, background-color 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px; /* Altura mínima menor */
+}
+
+.module-card:hover {
+    transform: translateY(-3px); /* Movimento mais sutil */
+    border-color: #FFD700;
+    background-color: #222;
+}
+
+.module-card .icon {
+    font-size: 28px; /* Ícone menor (era 40px) */
+    margin-bottom: 8px;
+}
+
+.module-card h3 {
+    font-size: 13px; /* Texto menor */
+    font-weight: 500;
+    color: #ddd;
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* --- ESTILO DE BLOQUEIO --- */
+.module-card.locked {
+    opacity: 0.3;
+    cursor: not-allowed;
+    filter: grayscale(100%);
+    pointer-events: none;
+    border-color: #222 !important;
+    background-color: #0d0d0d !important;
+    transform: none !important;
+}
+
+.module-card.locked::after {
+    content: "🔒";
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 12px;
+}
+
+/* Overlay de Carregamento */
+.loading-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: #000;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #FFD700;
+}
+
+.spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid #333;
+    border-top: 3px solid #FFD700;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Ajuste para telas muito pequenas (Celular) */
+@media (max-width: 480px) {
+    .grid-modules {
+        grid-template-columns: repeat(3, 1fr); /* Tenta forçar 3 colunas no mobile */
+        gap: 8px;
+    }
+    .module-card {
+        padding: 10px;
+        min-height: 90px;
+    }
+    .module-card .icon { font-size: 24px; }
+    .module-card h3 { font-size: 11px; }
+}

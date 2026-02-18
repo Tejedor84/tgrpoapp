@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TG Log - Eventos</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="eventos.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <main class="main-content">
+            
+            <header class="top-bar" style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center;">
+                    <a href="painel.html" class="btn-back-panel">⬅ Voltar ao Painel</a>
+                    <h2>Gestão de Eventos</h2>
+                </div>
+                <div class="user-info"><span id="user-email">Carregando...</span></div>
+            </header>
+
+            <div class="content-area">
+                <div class="page-header">
+                    <h3>Lista de Eventos</h3>
+                    
+                    <div class="header-controls">
+                        <div class="search-box">
+                            <span style="margin-right:5px;">🔍</span>
+                            <input type="text" id="searchInput" placeholder="Buscar evento...">
+                        </div>
+
+                        <div class="header-buttons">
+                            <button id="btnHistory" class="btn-secondary" style="border: 1px solid #FFD700; color: #FFD700; background: transparent;">📜 Ver Histórico</button>
+                            <button id="btnNewEvent" class="btn-primary">+ Novo Evento</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Evento</th>
+                                <th>Local</th>
+                                <th>Tipo</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="eventsList">
+                            <tr><td colspan="6" align="center">Carregando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="modalEvent" class="modal hidden">
+        <div class="modal-content">
+            <span id="closeModal" class="close-btn">&times;</span>
+            <h3 id="modalTitle" style="color: #FFD700; margin-bottom: 20px;">Novo Evento</h3>
+            
+            <form id="formEvent">
+                <input type="hidden" id="eventId">
+                
+                <div class="input-group">
+                    <label>Nome do Evento</label>
+                    <input type="text" id="eventName" required placeholder="Ex: Show Corporativo">
+                </div>
+
+                <div class="row-dupla" style="display: flex; gap: 20px;">
+                    <div class="input-group" style="flex:1">
+                        <label>Data Início</label>
+                        <input type="date" id="eventDateStart" required>
+                    </div>
+                    <div class="input-group" style="flex:1">
+                        <label>Data Fim</label>
+                        <input type="date" id="eventDateEnd" required>
+                    </div>
+                </div>
+
+                <div class="row-dupla" style="display: flex; gap: 20px;">
+                    <div class="input-group" style="flex:1">
+                        <label>Tipo</label>
+                        <select id="eventType">
+                            <option value="Corporativo">Corporativo</option>
+                            <option value="Social">Social</option>
+                            <option value="Show/Concerto">Show/Concerto</option>
+                            <option value="Feira/Stand">Feira/Stand</option>
+                            <option value="Outro">Outro</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="flex:1">
+                        <label>Status</label>
+                        <select id="eventStatus">
+                            <option value="Confirmado">Confirmado</option>
+                            <option value="Pendente">Pendente</option>
+                            <option value="Cancelado">Cancelado</option>
+                            <option value="Finalizado">Finalizado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Local</label>
+                    <select id="eventLocation" required>
+                        <option value="">Carregando locais...</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Observações</label>
+                    <textarea id="eventObs" rows="3" placeholder="Detalhes adicionais..."></textarea>
+                </div>
+
+                <div class="form-actions" style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                    <button type="button" id="btnCancel" class="btn-secondary" style="color:#FFD700; background:transparent; border:1px solid #FFD700;">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar Evento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="autoupdate.js"></script> <script src="auth-guard.js"></script>
+    <script type="module" src="eventos.js"></script>
+</body>
+</html>

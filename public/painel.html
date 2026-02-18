@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TG Log - Painel Principal</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="painel.css">
+</head>
+<body>
+
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Carregando permissões...</p>
+    </div>
+
+    <header class="panel-header">
+        <img src="logo.png" alt="TG LOG" class="panel-logo">
+        <div class="user-info">
+            <span id="userEmail">Carregando...</span>
+            <span id="userRoleBadge" class="role-badge">...</span>
+            <button id="btnLogout" class="btn-logout-panel">Sair</button>
+        </div>
+    </header>
+
+    <main class="panel-container">
+        <h2 style="color: #FFD700; margin-bottom: 20px;">Módulos do Sistema</h2>
+        
+        <div class="grid-modules">
+            
+            <div class="module-card" id="btnDashboard" onclick="irPara('dashboard.html')">
+                <div class="icon">📊</div>
+                <h3>Dashboard</h3>
+            </div>
+            
+            <div class="module-card" id="btnCronograma" onclick="irPara('cronograma.html')">
+                <div class="icon">📅</div>
+                <h3>Cronograma</h3>
+            </div>
+
+            <div class="module-card" id="btnEventos" onclick="irPara('eventos.html')">
+                <div class="icon">🎉</div>
+                <h3>Eventos</h3>
+            </div>
+
+            <div class="module-card" id="btnLocais" onclick="irPara('locais.html')">
+                <div class="icon">📍</div>
+                <h3>Locais</h3>
+            </div>
+
+            <div class="module-card" id="btnEquipamentos" onclick="irPara('equipamentos.html')">
+                <div class="icon">🔊</div>
+                <h3>Equipamentos</h3>
+            </div>
+
+            <div class="module-card" id="btnPonto" onclick="irPara('ponto.html')">
+                <div class="icon">⏰</div>
+                <h3>Ponto Eletrônico</h3>
+            </div>
+
+            <div class="module-card" id="btnEquipe" onclick="irPara('equipe.html')">
+                <div class="icon">👷</div>
+                <h3>Equipe</h3>
+            </div>
+
+            <div class="module-card" id="btnRelatorioPonto" onclick="irPara('relatorio_ponto.html')">
+                <div class="icon">📋</div>
+                <h3>Relat. Ponto</h3>
+            </div>
+
+            <div class="module-card" id="btnClientes" onclick="irPara('clientes.html')">
+                <div class="icon">🤝</div>
+                <h3>Clientes</h3>
+            </div>
+
+            <div class="module-card" id="btnAgencias" onclick="irPara('agencias.html')">
+                <div class="icon">🏢</div>
+                <h3>Agências</h3>
+            </div>
+
+            <div class="module-card" id="btnOrcamentos" onclick="irPara('orcamentos.html')">
+                <div class="icon">💰</div>
+                <h3>Orçamentos</h3>
+            </div>
+
+            <div class="module-card" id="btnCRM" onclick="irPara('crm.html')">
+                <div class="icon">📈</div>
+                <h3>CRM</h3>
+            </div>
+
+            <div class="module-card" id="btnPagamentos" onclick="irPara('pagamentos.html')">
+                <div class="icon">💲</div>
+                <h3>Pagamentos</h3>
+            </div>
+
+            <div class="module-card" id="btnPendencias" onclick="irPara('pendencias.html')">
+                <div class="icon">⚠️</div>
+                <h3>Pendências</h3>
+            </div>
+            
+            <div class="module-card restricted admin-only" id="btnUsuarios" onclick="irPara('usuarios.html')">
+                <div class="icon">👥</div>
+                <h3>Usuários</h3>
+            </div>
+
+            <div class="module-card restricted admin-only" id="btnConfig" onclick="irPara('configuracoes.html')">
+                <div class="icon">⚙️</div>
+                <h3>Configurações</h3>
+            </div>
+
+            <div class="module-card" id="btnRegistrarPonto" onclick="irPara('registrar-ponto.html')">
+                <div class="icon">📍</div>
+                <h3>Bater Ponto</h3>
+            </div>
+
+        </div>
+
+        <div id="msgNoAccess" style="display: none; text-align: center; margin-top: 60px; color: #aaa;">
+            <div style="font-size: 3em; margin-bottom: 10px;">✋</div>
+            <h3 style="color: #FFD700; margin-bottom: 10px;">Acesso Restrito</h3>
+            <p>Seu usuário foi criado, mas ainda não possui módulos liberados.</p>
+            <p>Solicite ao administrador para ativar suas permissões.</p>
+        </div>
+
+    </main>
+
+    <script src="autoupdate.js"></script> <script src="auth-guard.js"></script>
+    <script type="module" src="painel.js"></script>
+</body>
+</html>

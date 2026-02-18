@@ -1,0 +1,134 @@
+/* ARQUIVO: clientes.css */
+
+.workspace {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Formulário */
+.form-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+    border: 1px solid #ddd;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #333;
+}
+
+.form-group input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Área de Contatos Múltiplos */
+.contacts-section {
+    background: #f9f9f9;
+    padding: 15px;
+    border: 1px dashed #ccc;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.section-header h4 { margin: 0; color: #555; }
+
+.btn-add-contact {
+    background: #27ae60;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+}
+.btn-add-contact:hover { background: #219150; }
+
+/* Linha de Contato Individual */
+.contact-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.contact-row input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.contact-row .inp-c-nome { flex: 2; }
+.contact-row .inp-c-tel { flex: 1; }
+.contact-row .inp-c-email { flex: 1; }
+
+.btn-remove-contact {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Tabela e Lista */
+.list-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.search-bar { margin-bottom: 15px; }
+.search-bar input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th, .data-table td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
+.data-table th { background-color: #f4f4f4; font-weight: bold; color: #333; }
+.data-table tr:hover { background-color: #f9f9f9; }
+
+/* Botões de Ação na Tabela */
+.btn-action {
+    border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; color: white; margin-right: 5px; font-size: 12px;
+}
+.btn-edit { background-color: #f39c12; }
+.btn-delete { background-color: #c0392b; }
+
+/* Badge de Contatos na Tabela */
+.contact-badge {
+    display: block;
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 2px;
+}
+.contact-badge b { color: #000; }

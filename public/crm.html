@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TG Log - CRM</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="crm.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <main class="main-content">
+            
+            <header class="top-bar" style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center;">
+                    <a href="painel.html" class="btn-back-panel">⬅ Voltar ao Painel</a>
+                    <h2>Pipeline de Vendas (CRM)</h2>
+                </div>
+                <div class="user-info"><span id="user-email">Carregando...</span></div>
+            </header>
+
+            <div class="crm-controls">
+                <button id="btnNewDeal" class="btn-primary">+ Nova Oportunidade</button>
+            </div>
+
+            <div class="kanban-board">
+                <div class="kanban-column" id="col-prospeccao" ondrop="drop(event)" ondragover="allowDrop(event)" data-status="Prospecção">
+                    <div class="column-header header-prospeccao">Prospecção</div>
+                    <div class="column-content"></div>
+                </div>
+
+                <div class="kanban-column" id="col-qualificacao" ondrop="drop(event)" ondragover="allowDrop(event)" data-status="Qualificação">
+                    <div class="column-header header-qualificacao">Qualificação</div>
+                    <div class="column-content"></div>
+                </div>
+
+                <div class="kanban-column" id="col-proposta" ondrop="drop(event)" ondragover="allowDrop(event)" data-status="Proposta">
+                    <div class="column-header header-proposta">Proposta Enviada</div>
+                    <div class="column-content"></div>
+                </div>
+
+                <div class="kanban-column" id="col-negociacao" ondrop="drop(event)" ondragover="allowDrop(event)" data-status="Negociação">
+                    <div class="column-header header-negociacao">Negociação</div>
+                    <div class="column-content"></div>
+                </div>
+
+                <div class="kanban-column" id="col-fechado" ondrop="drop(event)" ondragover="allowDrop(event)" data-status="Fechado">
+                    <div class="column-header header-fechado">Fechado / Ganho</div>
+                    <div class="column-content"></div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="modalDeal" class="modal hidden">
+        <div class="modal-content">
+            <span id="closeModal" class="close-btn">&times;</span>
+            <h3 id="modalTitle" style="color: #FFD700; margin-bottom: 20px;">Nova Oportunidade</h3>
+            
+            <form id="formDeal">
+                <input type="hidden" id="dealId">
+                
+                <div class="input-group">
+                    <label>Título / Cliente</label>
+                    <input type="text" id="dealTitle" required placeholder="Ex: Evento XP Investimentos">
+                </div>
+
+                <div class="input-group">
+                    <label>Valor Estimado (R$)</label>
+                    <input type="number" id="dealValue" placeholder="0.00">
+                </div>
+
+                <div class="input-group">
+                    <label>Fase Inicial</label>
+                    <select id="dealStatus">
+                        <option value="Prospecção">Prospecção</option>
+                        <option value="Qualificação">Qualificação</option>
+                        <option value="Proposta">Proposta Enviada</option>
+                        <option value="Negociação">Negociação</option>
+                        <option value="Fechado">Fechado / Ganho</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Responsável</label>
+                    <input type="text" id="dealOwner" placeholder="Nome do vendedor">
+                </div>
+
+                <div class="input-group">
+                    <label>Observações</label>
+                    <textarea id="dealObs" rows="3"></textarea>
+                </div>
+
+                <div class="form-actions" style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                    <button type="button" id="btnCancel" class="btn-secondary" style="color:#FFD700; background:transparent; border:1px solid #FFD700;">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="autoupdate.js"></script> <script src="auth-guard.js"></script>
+    <script type="module" src="crm.js"></script>
+</body>
+</html>
