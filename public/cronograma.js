@@ -1,3 +1,7 @@
+/* =================================================================
+   CRONOGRAMA.JS - VERSÃO COM DUPLICAÇÃO DE TAREFAS
+   ================================================================= */
+
 import { auth, db } from "./firebase-init.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { collection, addDoc, onSnapshot, query, orderBy, where, doc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -91,6 +95,22 @@ function iniciarListener() {
 }
 
 // --- 4. RENDERIZAÇÃO ---
+const DIAS_SEMANA = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+function formatarDiaCabecalho(dataISO) {
+    const [y, m, d] = dataISO.split('-').map(Number);
+    const dt = new Date(y, m - 1, d);
+    const diaSemana = DIAS_SEMANA[dt.getDay()];
+    return `${diaSemana}, ${String(d).padStart(2,'0')} de ${MESES[m-1]}`;
+}
+
+function isHoje(dataISO) {
+    const hoje = new Date();
+    const hojeISO = `${hoje.getFullYear()}-${String(hoje.getMonth()+1).padStart(2,'0')}-${String(hoje.getDate()).padStart(2,'0')}`;
+    return dataISO === hojeISO;
+}
+
 function renderizar() {
     grid.innerHTML = "";
 
@@ -98,14 +118,12 @@ function renderizar() {
     const dataFiltro = filterDate.value;
 
     const filtrados = tarefas.filter(t => {
-        const matchTexto = 
-            t.titulo.toLowerCase().includes(termo) || 
+        const matchTexto =
+            t.titulo.toLowerCase().includes(termo) ||
             (t.local && t.local.toLowerCase().includes(termo)) ||
             (t.equipe && t.equipe.toLowerCase().includes(termo));
-        
         let matchData = true;
         if (dataFiltro) matchData = (t.data === dataFiltro);
-
         return matchTexto && matchData;
     });
 
@@ -114,46 +132,86 @@ function renderizar() {
         return;
     }
 
+    // Agrupa por data
+    const porDia = {};
     filtrados.forEach(t => {
-        const card = document.createElement('div');
-        const classeExtra = t.pendencias ? 'has-pending' : '';
-        card.className = `task-card ${classeExtra}`;
+        const chave = t.data || 'sem-data';
+        if (!porDia[chave]) porDia[chave] = [];
+        porDia[chave].push(t);
+    });
 
-        const dataFormatada = t.data ? "📅 " + t.data.split('-').reverse().join('/') : "📅 Data Inválida";
-        
-        let displayHora = "";
-        if (t.hora === "A definir") {
-            displayHora = `<span style="color:#FFD700; font-weight:bold;">⚠️ A Definir</span>`;
-        } else if (t.hora) {
-            displayHora = `⏰ ${t.hora}`;
-        }
+    // Ordena dias e cards dentro de cada dia por hora
+    const diasOrdenados = Object.keys(porDia).sort();
+    diasOrdenados.forEach(dia => {
+        porDia[dia].sort((a, b) => {
+            if (!a.hora || a.hora === 'A definir') return 1;
+            if (!b.hora || b.hora === 'A definir') return -1;
+            return a.hora.localeCompare(b.hora);
+        });
+    });
 
-        let equipeVisual = "";
-        if (t.equipe) {
-            equipeVisual = t.equipe.replace(/\n/g, "<br>");
-        }
+    diasOrdenados.forEach(dia => {
+        const tarefasDoDia = porDia[dia];
+        const hoje = isHoje(dia);
 
-        card.innerHTML = `
-            <div class="card-header">
-                <span>${dataFormatada}</span>
-                <span class="card-time" style="background:transparent; padding:0;">${displayHora}</span>
+        // Cabeçalho do dia
+        const dayHeader = document.createElement('div');
+        dayHeader.className = 'day-group-header' + (hoje ? ' day-today' : '');
+        const labelDia = dia !== 'sem-data' ? formatarDiaCabecalho(dia) : 'Data não definida';
+        dayHeader.innerHTML = `
+            <div class="day-label">
+                <span class="day-name">${labelDia}</span>
+                ${hoje ? '<span class="today-badge">HOJE</span>' : ''}
             </div>
-            
-            <div class="card-title">${t.titulo}</div>
-            
-            <div class="card-details">
-                ${t.local ? `<p>📍 ${t.local}</p>` : ''}
-                ${t.equipe ? `<p>👥 ${equipeVisual}</p>` : ''}
-                ${t.detalhes ? `<p>📝 ${t.detalhes}</p>` : ''}
-                ${t.pendencias ? `<p class="pending-alert">⚠️ ${t.pendencias}</p>` : ''}
-            </div>
+            <span class="day-count">${tarefasDoDia.length} atividade${tarefasDoDia.length > 1 ? 's' : ''}</span>`;
+        grid.appendChild(dayHeader);
 
-            <div class="card-actions">
-                <button class="btn-icon" onclick="editarTarefa('${t.id}')" title="Editar">✏️</button>
-                <button class="btn-icon" onclick="excluirTarefa('${t.id}')" title="Excluir" style="color:#ff4d4d;">🗑️</button>
-            </div>
-        `;
-        grid.appendChild(card);
+        // Grid de cards do dia
+        const dayGrid = document.createElement('div');
+        dayGrid.className = 'day-cards-grid';
+        grid.appendChild(dayGrid);
+
+        tarefasDoDia.forEach(t => {
+            const card = document.createElement('div');
+            const classeExtra = t.pendencias ? 'has-pending' : '';
+            card.className = `task-card ${classeExtra}`;
+
+            let displayHora = "";
+            if (t.hora === "A definir") {
+                displayHora = `<span class="hora-pill hora-indefinida">⚠️ A Definir</span>`;
+            } else if (t.hora) {
+                displayHora = `<span class="hora-pill">⏰ ${t.hora}</span>`;
+            }
+
+            let equipeVisual = "";
+            if (t.equipe) {
+                equipeVisual = t.equipe.split('\n')
+                    .map(n => n.trim()).filter(Boolean)
+                    .map(n => `<span class="equipe-nome">| ${n}</span>`)
+                    .join('');
+            }
+
+            card.innerHTML = `
+                <div class="card-top">
+                    <div class="card-hora">${displayHora}</div>
+                    <div class="card-actions">
+                        <button class="btn-icon" onclick="editarTarefa('${t.id}')" title="Editar">✏️</button>
+                        <button class="btn-icon" onclick="duplicarTarefa('${t.id}')" title="Duplicar">📄</button>
+                        <button class="btn-icon" onclick="excluirTarefa('${t.id}')" title="Excluir" style="color:#ff4d4d;">🗑️</button>
+                    </div>
+                </div>
+
+                <div class="card-title">${t.titulo}</div>
+
+                <div class="card-details">
+                    ${t.local    ? `<div class="detail-row"><span class="detail-icon">📍</span><span>${t.local}</span></div>` : ''}
+                    ${t.equipe   ? `<div class="detail-row detail-equipe"><span class="detail-icon">👥</span><div class="equipe-lista">${equipeVisual}</div></div>` : ''}
+                    ${t.detalhes ? `<div class="detail-row"><span class="detail-icon">📝</span><span>${t.detalhes}</span></div>` : ''}
+                    ${t.pendencias ? `<div class="detail-row pending-alert"><span>⚠️</span><span>${t.pendencias}</span></div>` : ''}
+                </div>`;
+
+            dayGrid.appendChild(card);
+        });
     });
 }
 
@@ -169,15 +227,20 @@ btnAdd.addEventListener('click', () => {
     if(filterDate.value) inpDate.value = filterDate.value;
     else inpDate.valueAsDate = new Date();
     
-    // Limpa chat para nova tarefa
     carregarComentarios(null);
-    
     modal.classList.remove('hidden');
 });
 
-const fechar = () => modal.classList.add('hidden');
-closeModal.addEventListener('click', fechar);
-btnCancel.addEventListener('click', fechar);
+const fechar = () => {
+    modal.classList.add('hidden');
+    form.reset(); // Força a limpeza das validações HTML 5 do navegador
+    document.getElementById('taskId').value = ""; // Limpa a referência de edição
+    chkNoTime.checked = false; // Restaura o checkbox
+    inpTime.disabled = false; // Destrava o campo de hora
+}
+
+closeModal.addEventListener('click' , fechar);
+btnCancel.addEventListener('click' , fechar);
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -204,11 +267,47 @@ form.addEventListener('submit', async (e) => {
     }
 });
 
+// EDIÇÃO
+
 window.editarTarefa = (id) => {
     const t = tarefas.find(x => x.id === id);
     if (!t) return;
 
+    form.reset(); // Limpeza preventiva antes de popular novos dados
+
     document.getElementById('taskId').value = t.id;
+    document.getElementById('inpDate').value = t.data;
+
+    // Carrega histórico de chat
+    carregarComentarios(t.id);
+    modal.style.display = 'flex';
+};
+
+// --- NOVA FUNÇÃO: DUPLICAR TAREFA ---
+window.duplicarTarefa = (id) => {
+    const t = tarefas.find(x => x.id === id);
+    if (!t) return;
+
+    // 1. Limpa o ID para garantir que salve como NOVO
+    document.getElementById('taskId').value = ""; 
+    
+    // 2. Preenche os dados iguais ao original
+    preencherFormulario(t);
+
+    // 3. NÃO carrega comentários (começa do zero)
+    carregarComentarios(null);
+
+    // 4. Abre o modal e foca na DATA para a pessoa mudar
+    modal.style.display = 'flex';
+    
+    // Pequeno aviso visual ou foco
+    const dataInput = document.getElementById('inpDate');
+    dataInput.focus();
+    // Opcional: dataInput.showPicker(); // Se o navegador suportar, abre o calendário direto
+};
+
+// Função auxiliar para não repetir código
+function preencherFormulario(t) {
     document.getElementById('inpDate').value = t.data;
     
     if (t.hora === "A definir") {
@@ -226,12 +325,7 @@ window.editarTarefa = (id) => {
     document.getElementById('inpTeam').value = t.equipe; 
     document.getElementById('inpPending').value = t.pendencias;
     document.getElementById('inpDetails').value = t.detalhes;
-
-    // CARREGA COMENTÁRIOS DO EVENTO SELECIONADO (NOVO)
-    carregarComentarios(t.id);
-
-    modal.classList.remove('hidden');
-};
+}
 
 window.excluirTarefa = async (id) => {
     if(confirm("Tem certeza que deseja excluir esta atividade?")) {
@@ -252,76 +346,88 @@ btnHistory.addEventListener('click', () => {
 });
 
 btnCopy.addEventListener('click', () => {
-    if (tarefas.length === 0) return alert("Nada para copiar.");
-    const cards = document.querySelectorAll('.task-card');
-    if (cards.length === 0) return alert("Nenhuma tarefa visível.");
+    // Lê direto do array de dados filtrados (não depende de seletores DOM)
+    const termo = filterText.value.toLowerCase();
+    const dataFiltro = filterDate.value;
 
-    const gruposPorData = {};
+    const filtrados = tarefas.filter(t => {
+        const matchTexto =
+            t.titulo.toLowerCase().includes(termo) ||
+            (t.local  && t.local.toLowerCase().includes(termo)) ||
+            (t.equipe && t.equipe.toLowerCase().includes(termo));
+        const matchData = !dataFiltro || t.data === dataFiltro;
+        return matchTexto && matchData;
+    });
 
-    cards.forEach(card => {
-        let dataTexto = card.querySelector('.card-header span:first-child').innerText.replace('📅', '').trim();
-        let hora = card.querySelector('.card-time').innerText.replace('⏰', '').replace('⚠️', '').trim();
-        let titulo = card.querySelector('.card-title').innerText.trim();
-        let detalhesArr = [];
-        
-        card.querySelectorAll('.card-details p').forEach(p => {
-            let rawHtml = p.innerHTML;
-            let textWithNewlines = rawHtml.replace(/<br\s*[\/]?>/gi, "\n");
-            let tempDiv = document.createElement("div");
-            tempDiv.innerHTML = textWithNewlines;
-            let cleanText = tempDiv.innerText;
-            cleanText = cleanText.replace(/📍|👥|📝|⚠️/g, '').trim();
+    if (filtrados.length === 0) return alert("Nada para copiar.");
 
-            const partes = cleanText.split(/[\n,]/g);
-            partes.forEach(parte => {
-                const limpo = parte.trim();
-                if(limpo) detalhesArr.push(limpo);
-            });
-        });
+    // Agrupa por data (mesmo critério da renderização)
+    const porDia = {};
+    filtrados.forEach(t => {
+        const chave = t.data || 'sem-data';
+        if (!porDia[chave]) porDia[chave] = [];
+        porDia[chave].push(t);
+    });
 
-        if (!gruposPorData[dataTexto]) gruposPorData[dataTexto] = [];
-
-        gruposPorData[dataTexto].push({
-            hora: hora,
-            titulo: titulo,
-            detalhes: detalhesArr
+    // Ordena dias e por hora dentro de cada dia
+    const diasOrdenados = Object.keys(porDia).sort();
+    diasOrdenados.forEach(dia => {
+        porDia[dia].sort((a, b) => {
+            if (!a.hora || a.hora === 'A definir') return 1;
+            if (!b.hora || b.hora === 'A definir') return -1;
+            return a.hora.localeCompare(b.hora);
         });
     });
 
     let textoFinal = `*AGENDA LOGISTICA - TG LOG*\n\n`;
 
-    for (const [data, listaItens] of Object.entries(gruposPorData)) {
-        textoFinal += `*DATA: ${data}*\n`;
+    diasOrdenados.forEach(dia => {
+        const labelDia = dia !== 'sem-data'
+            ? dia.split('-').reverse().join('/')
+            : 'Data não definida';
+
+        textoFinal += `*${labelDia}*\n`;
         textoFinal += `------------------------\n`;
-        listaItens.forEach(item => {
-            let linhaHora = item.hora ? `${item.hora} - ` : "";
-            textoFinal += `*${linhaHora}${item.titulo}*\n`;
-            item.detalhes.forEach(det => { textoFinal += `> ${det}\n`; });
-            textoFinal += `\n`; 
+
+        porDia[dia].forEach(t => {
+            const hora = (!t.hora || t.hora === 'A definir') ? 'A definir' : t.hora;
+            textoFinal += `*${hora} - ${t.titulo}*\n`;
+
+            if (t.local)    textoFinal += `*Local: ${t.local}*\n`;
+
+            if (t.equipe) {
+                t.equipe.split('\n').map(n => n.trim()).filter(Boolean)
+                    .forEach(nome => { textoFinal += `| ${nome}\n`; });
+            }
+
+            if (t.detalhes)   textoFinal += `*${t.detalhes}*\n`;
+            if (t.pendencias) textoFinal += `*⚠️ ${t.pendencias}*\n`;
+
+            textoFinal += `\n`;
         });
+
         textoFinal += `\n`;
-    }
+    });
 
     navigator.clipboard.writeText(textoFinal).then(() => {
         alert("Copiado com sucesso!");
-    }).catch(err => {
-        alert("Erro ao copiar.");
+    }).catch(() => {
+        alert("Erro ao copiar. Verifique as permissões do navegador.");
     });
 });
 
 /* =========================================================
-   MÓDULO DE COMENTÁRIOS (NOVO - ADICIONADO AO FINAL)
+   MÓDULO DE COMENTÁRIOS
    ========================================================= */
 
 let eventoAtualId = null;
-let unsubscribeComments = null; // Para parar de ouvir quando fechar modal
+let unsubscribeComments = null; 
 
 function carregarComentarios(eventoId) {
     eventoAtualId = eventoId;
     const listaDiv = document.getElementById('lista-comentarios');
     const inputArea = document.querySelector('.comentarios-input-area');
     
-    // Limpa listener anterior se existir
     if (unsubscribeComments) unsubscribeComments();
 
     if (!eventoId) {
@@ -330,11 +436,9 @@ function carregarComentarios(eventoId) {
         return;
     }
 
-    // Mostra input e loading
     inputArea.style.display = 'flex';
     listaDiv.innerHTML = '<div class="empty-state">Carregando conversas...</div>';
 
-    // Ouve em tempo real
     const q = query(
         collection(db, "cronograma", eventoId, "comentarios"),
         orderBy("data", "asc")
@@ -352,7 +456,6 @@ function carregarComentarios(eventoId) {
             renderizarComentario(doc.data());
         });
         
-        // Rola para o final
         listaDiv.scrollTop = listaDiv.scrollHeight;
     });
 }
@@ -360,7 +463,6 @@ function carregarComentarios(eventoId) {
 function renderizarComentario(data) {
     const listaDiv = document.getElementById('lista-comentarios');
     
-    // Formata a data
     let dataFormatada = 'Agora';
     if (data.data) {
         const dateObj = data.data.toDate();
@@ -382,7 +484,6 @@ function renderizarComentario(data) {
     listaDiv.appendChild(div);
 }
 
-// Torna global para usar no HTML
 window.enviarComentario = function() {
     const input = document.getElementById('novo-comentario');
     const texto = input.value.trim();
@@ -391,21 +492,20 @@ window.enviarComentario = function() {
     if (!eventoAtualId) return alert("Erro: ID do evento não encontrado.");
 
     const user = auth.currentUser;
-    const autorEmail = user ? user.email.split('@')[0] : 'Anônimo'; // Pega parte antes do @
+    const autorEmail = user ? user.email.split('@')[0] : 'Anônimo'; 
 
     addDoc(collection(db, "cronograma", eventoAtualId, "comentarios"), {
         texto: texto,
         autor: autorEmail,
         data: serverTimestamp()
     }).then(() => {
-        input.value = ''; // Limpa campo
+        input.value = ''; 
     }).catch(err => {
         console.error("Erro ao comentar:", err);
         alert("Erro ao enviar mensagem.");
     });
 };
 
-// Permite enviar com ENTER
 document.getElementById('novo-comentario').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
         window.enviarComentario();
