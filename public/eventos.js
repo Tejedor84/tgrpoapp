@@ -1,271 +1,234 @@
-import { auth, db } from "./firebase-init.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+/* =================================================================
+   EVENTOS.JS - V3 (COM EQUIPE)
+   ================================================================= */
 
-// --- SEGURANÇA ---
-import { verificarPermissao } from "./auth-guard.js";
+import { auth, db } from './firebase-init.js';
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { 
+    collection, 
+    addDoc, 
+    deleteDoc, 
+    doc, 
+    query, 
+    orderBy, 
+    getDocs,
+    onSnapshot,
+    serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// Elementos Globais
-const userEmailSpan = document.getElementById('user-email');
-const btnLogout = document.getElementById('btnLogout');
-
-// Elementos da Lista e Filtro
-const tableBody = document.getElementById('eventsList'); // ID CORRIGIDO
-const searchInput = document.getElementById('searchInput'); // ID CORRIGIDO
-const btnHistory = document.getElementById('btnHistory');
-const pageTitle = document.querySelector('.page-header h3');
-
-// Elementos CRUD
-const btnNewEvent = document.getElementById('btnNewEvent');
-const modal = document.getElementById('modalEvent');
-const closeModal = document.getElementById('closeModal');
-const btnCancel = document.getElementById('btnCancel');
-const form = document.getElementById('formEvent');
-
-// Campos do Modal (IDs SINCRONIZADOS)
-const modalTitle = document.getElementById('modalTitle');
-const eventIdInput = document.getElementById('eventId');
-const inpName = document.getElementById('eventName');
-const inpDateStart = document.getElementById('eventDateStart');
-const inpDateEnd = document.getElementById('eventDateEnd');
-const inpLocal = document.getElementById('eventLocation'); // Select
-const inpStatus = document.getElementById('eventStatus');
-const inpType = document.getElementById('eventType'); // Adicionado ao HTML
-const inpObs = document.getElementById('eventObs');   // Adicionado ao HTML
-
-// Estado
 let listaEventos = [];
-let modoHistorico = false;
-let unsubscribe = null;
 
-// --- 1. INICIALIZAÇÃO SEGURA ---
-onAuthStateChanged(auth, async (user) => {
+// --- 1. AUTENTICAÇÃO ---
+onAuthStateChanged(auth, (user) => {
     if (user) {
-        if(userEmailSpan) userEmailSpan.textContent = user.email;
-
-        // VERIFICA PERMISSÃO
-        await verificarPermissao(db, user.email);
-
-        await carregarLocaisNoSelect(); // Preenche o select de locais
-        carregarEventos(); // Carrega a tabela
+        document.getElementById('user-email').textContent = user.email;
+        carregarLocaisParaSelect();
+        carregarEquipeParaSelecao(); // <--- Novo: Carrega a equipe
+        iniciarListenerEventos();
     } else {
         window.location.href = "index.html";
     }
 });
 
-if(btnLogout) {
-    btnLogout.addEventListener('click', () => {
-        signOut(auth).then(() => window.location.href = "index.html");
-    });
-}
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput');
+    const filterStatus = document.getElementById('filterStatus');
+    if(searchInput) searchInput.addEventListener('input', renderizarTabela);
+    if(filterStatus) filterStatus.addEventListener('change', renderizarTabela);
+});
 
-// --- 2. CARREGAMENTO DE DADOS ---
-
-// Função Auxiliar: Preencher Select de Locais
-async function carregarLocaisNoSelect() {
-    if(!inpLocal) return;
+// --- 2. CARREGAR DADOS AUXILIARES ---
+async function carregarLocaisParaSelect() {
+    const select = document.getElementById('eventLocation');
+    if (!select) return;
     try {
         const q = query(collection(db, "locais"), orderBy("nome"));
-        const snapshot = await getDocs(q);
-        
-        inpLocal.innerHTML = '<option value="">Selecione um local...</option>';
-        
-        snapshot.forEach(doc => {
-            const l = doc.data();
+        const snap = await getDocs(q);
+        select.innerHTML = '<option value="">Selecione um local...</option>';
+        snap.forEach(doc => {
+            const local = doc.data();
             const option = document.createElement('option');
-            option.value = l.nome; // Salvamos o nome do local
-            option.textContent = l.nome;
-            inpLocal.appendChild(option);
+            option.value = local.nome;
+            option.textContent = local.nome;
+            select.appendChild(option);
         });
-    } catch (e) {
-        console.error("Erro ao carregar locais:", e);
-    }
+    } catch (error) { console.error("Erro locais:", error); }
 }
 
-function carregarEventos() {
-    // Limpa listener anterior
-    if(unsubscribe) { unsubscribe(); unsubscribe = null; }
-
-    const hoje = new Date().toISOString().split('T')[0];
-    let q;
-
-    if (modoHistorico) {
-        // Histórico (Anteriores a hoje)
-        q = query(collection(db, "events"), where("dataInicio", "<", hoje), orderBy("dataInicio", "desc"));
-        if(pageTitle) pageTitle.textContent = "Histórico de Eventos";
-        if(btnHistory) {
-            btnHistory.textContent = "Voltar para Futuros";
-            btnHistory.style.border = "1px solid #fff";
-            btnHistory.style.color = "#fff";
-        }
-    } else {
-        // Futuros (Hoje em diante)
-        q = query(collection(db, "events"), where("dataInicio", ">=", hoje), orderBy("dataInicio", "asc"));
-        if(pageTitle) pageTitle.textContent = "Próximos Eventos";
-        if(btnHistory) {
-            btnHistory.textContent = "📜 Ver Histórico";
-            btnHistory.style.border = "1px solid #FFD700";
-            btnHistory.style.color = "#FFD700";
-        }
-    }
-
-    unsubscribe = onSnapshot(q, (snapshot) => {
-        listaEventos = [];
-        tableBody.innerHTML = "";
+async function carregarEquipeParaSelecao() {
+    const container = document.getElementById('teamSelectionList');
+    if (!container) return;
+    try {
+        // Busca tanto na coleção 'equipe' quanto 'usuarios' para garantir
+        const q = query(collection(db, "equipe"), orderBy("nome"));
+        const snap = await getDocs(q);
         
-        if (snapshot.empty) {
-            const msg = modoHistorico ? "Nenhum evento no histórico." : "Nenhum evento próximo.";
-            tableBody.innerHTML = `<tr><td colspan="6" align="center">${msg}</td></tr>`;
+        container.innerHTML = '';
+        
+        if (snap.empty) {
+            container.innerHTML = '<div style="color:#ccc; padding:5px;">Nenhum membro encontrado em "equipe".</div>';
             return;
         }
 
-        snapshot.forEach(doc => {
-            let ev = doc.data();
-            ev.id = doc.id;
-            listaEventos.push(ev);
+        snap.forEach(doc => {
+            const membro = doc.data();
+            const nome = membro.nome || "Sem Nome";
+            
+            // Cria o checkbox
+            const div = document.createElement('div');
+            div.className = 'team-checkbox-item';
+            div.innerHTML = `
+                <input type="checkbox" name="equipeSelecionada" value="${nome}" id="chk_${doc.id}">
+                <label for="chk_${doc.id}">${nome}</label>
+            `;
+            container.appendChild(div);
         });
-        filtrarTabela();
+    } catch (error) { 
+        console.error("Erro equipe:", error);
+        container.innerHTML = '<div style="color:red;">Erro ao carregar equipe.</div>';
+    }
+}
+
+// --- 3. LISTENER E TABELA ---
+function iniciarListenerEventos() {
+    const q = query(collection(db, "eventos"), orderBy("dataInicio", "asc"));
+    onSnapshot(q, (snapshot) => {
+        listaEventos = [];
+        snapshot.forEach(doc => {
+            listaEventos.push({ id: doc.id, ...doc.data() });
+        });
+        renderizarTabela();
     });
 }
 
-// Botão de Alternar Histórico
-if(btnHistory) {
-    btnHistory.addEventListener('click', () => {
-        modoHistorico = !modoHistorico;
-        if(searchInput) searchInput.value = "";
-        carregarEventos();
+function renderizarTabela() {
+    const tbody = document.getElementById('eventsList');
+    const termo = document.getElementById('searchInput').value.toLowerCase();
+    const statusFiltro = document.getElementById('filterStatus').value;
+
+    tbody.innerHTML = '';
+
+    const filtrados = listaEventos.filter(evento => {
+        const nome = (evento.nome || "").toLowerCase();
+        const local = (evento.local || "").toLowerCase();
+        const status = (evento.status || "");
+        const bateTexto = nome.includes(termo) || local.includes(termo);
+        const bateStatus = statusFiltro === "" || status === statusFiltro;
+        return bateTexto && bateStatus;
     });
-}
 
-// Filtro Local
-function filtrarTabela() {
-    const termo = searchInput ? searchInput.value.toLowerCase() : "";
-    
-    // Filtra na memória
-    const filtrados = listaEventos.filter(e => 
-        (e.nome && e.nome.toLowerCase().includes(termo)) || 
-        (e.local && e.local.toLowerCase().includes(termo)) ||
-        (e.status && e.status.toLowerCase().includes(termo))
-    );
-    
-    renderizarTabela(filtrados);
-}
-
-if(searchInput) searchInput.addEventListener('input', filtrarTabela);
-
-function renderizarTabela(lista) {
-    tableBody.innerHTML = "";
-    
-    if(lista.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="6" align="center">Nenhum resultado encontrado.</td></tr>`;
+    if (filtrados.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px;">Nenhum evento encontrado.</td></tr>';
         return;
     }
 
-    lista.forEach(ev => {
+    filtrados.forEach(evento => {
         const tr = document.createElement('tr');
         
-        // Formata data DD/MM/YYYY
-        let dataF = ev.dataInicio;
-        if(ev.dataInicio && ev.dataInicio.includes('-')) {
-            const p = ev.dataInicio.split('-');
-            dataF = `${p[2]}/${p[1]}/${p[0]}`;
+        let badgeClass = 'status-pendente';
+        if (evento.status === 'Confirmado') badgeClass = 'status-confirmado';
+        if (evento.status === 'Cancelado') badgeClass = 'status-cancelado';
+        if (evento.status === 'Finalizado') badgeClass = 'status-finalizado';
+
+        // Formata Datas
+        let dataInicioF = "-";
+        if (evento.dataInicio) {
+            const p = evento.dataInicio.split('-');
+            dataInicioF = `${p[2]}/${p[1]}/${p[0]}`;
         }
         
-        // Badge de Status
-        let badgeClass = 'status-pendente';
-        if(ev.status === 'Confirmado' || ev.status === 'Realizado') badgeClass = 'status-confirmado';
-        if(ev.status === 'Cancelado') badgeClass = 'status-cancelado';
-        if(ev.status === 'Finalizado') badgeClass = 'status-finalizado';
+        let dataMontagemF = "-";
+        if (evento.montagem) {
+            const d = new Date(evento.montagem);
+            dataMontagemF = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+        }
+
+        // Formata Equipe
+        let equipeHtml = '<span style="color:#666; font-size:12px;">-</span>';
+        if (evento.equipe && Array.isArray(evento.equipe) && evento.equipe.length > 0) {
+            const qtd = evento.equipe.length;
+            const nomesTooltip = evento.equipe.join(', '); // Nomes aparecem ao passar o mouse
+            equipeHtml = `<span class="team-count-badge" title="${nomesTooltip}">${qtd} Pessoas</span>`;
+        }
 
         tr.innerHTML = `
-            <td>${dataF}</td>
-            <td><strong>${ev.nome}</strong></td>
-            <td>${ev.local || '-'}</td>
-            <td>${ev.tipo || 'Geral'}</td>
-            <td><span class="status-badge ${badgeClass}">${ev.status}</span></td>
-            <td>
-                <div class="actions-cell">
-                    <button class="btn-icon-edit" onclick="editarEvento('${ev.id}')" title="Editar">✏️</button>
-                    <button class="btn-icon-delete" onclick="excluirEvento('${ev.id}')" title="Excluir">🗑️</button>
-                </div>
+            <td style="font-size:12px; color:#e67e22; font-weight:bold;">${dataMontagemF}</td>
+            <td>${dataInicioF}</td>
+            <td><strong>${evento.nome || "Sem nome"}</strong></td>
+            <td>${evento.local || "-"}</td>
+            <td>${equipeHtml}</td>
+            <td><span class="status-badge ${badgeClass}">${evento.status}</span></td>
+            <td style="text-align: center;">
+                <button class="btn-icon btn-delete" onclick="window.excluirEvento('${evento.id}')" title="Excluir">
+                    <i class="fas fa-trash"></i>
+                </button>
             </td>
         `;
-        tableBody.appendChild(tr);
+        tbody.appendChild(tr);
     });
 }
 
-// --- 3. MODAL E CRUD ---
-function abrirModal(modo = 'criar') {
-    modal.classList.remove('hidden');
-    if(modo === 'criar') {
-        form.reset();
-        eventIdInput.value = "";
-        modalTitle.textContent = "Novo Evento";
-        if(inpDateStart) inpDateStart.valueAsDate = new Date();
-    } else {
-        modalTitle.textContent = "Editar Evento";
-    }
+// --- 4. MODAL ---
+window.abrirModalEvento = function() {
+    document.getElementById('modalEvent').classList.remove('hidden');
+    // Limpa checkboxes
+    document.querySelectorAll('input[name="equipeSelecionada"]').forEach(chk => chk.checked = false);
+    setTimeout(() => document.getElementById('eventName').focus(), 100);
 }
 
-function fecharModal() { modal.classList.add('hidden'); }
+window.fecharModalEvento = function() {
+    document.getElementById('modalEvent').classList.add('hidden');
+    document.getElementById('formEvent').reset();
+}
 
-if(btnNewEvent) btnNewEvent.addEventListener('click', () => abrirModal('criar'));
-if(closeModal) closeModal.addEventListener('click', fecharModal);
-if(btnCancel) btnCancel.addEventListener('click', fecharModal);
+// --- 5. SALVAR ---
+const form = document.getElementById('formEvent');
+if (form) {
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('btnSalvarEvento');
+        const txtOriginal = btn.innerText;
+        btn.innerText = "Salvando...";
+        btn.disabled = true;
 
-// Salvar
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = form.querySelector('button[type="submit"]');
-    btn.disabled = true;
-    btn.textContent = "Salvando...";
+        // Pega os membros selecionados
+        const equipeSelecionada = [];
+        document.querySelectorAll('input[name="equipeSelecionada"]:checked').forEach(chk => {
+            equipeSelecionada.push(chk.value);
+        });
 
-    const dados = {
-        nome: inpName.value,
-        dataInicio: inpDateStart.value,
-        dataFim: inpDateEnd.value,
-        local: inpLocal.value,
-        status: inpStatus.value,
-        tipo: inpType ? inpType.value : "Corporativo",
-        obs: inpObs ? inpObs.value : ""
-    };
-
-    const id = eventIdInput.value;
-    try {
-        if(id) {
-            await updateDoc(doc(db, "events", id), dados);
-        } else {
-            await addDoc(collection(db, "events"), dados);
+        try {
+            await addDoc(collection(db, "eventos"), {
+                nome: document.getElementById('eventName').value,
+                montagem: document.getElementById('eventMontagem').value,
+                desmontagem: document.getElementById('eventDesmontagem').value,
+                dataInicio: document.getElementById('eventDateStart').value,
+                dataFim: document.getElementById('eventDateEnd').value,
+                tipo: document.getElementById('eventType').value,
+                status: document.getElementById('eventStatus').value,
+                local: document.getElementById('eventLocation').value,
+                obs: document.getElementById('eventObs').value,
+                equipe: equipeSelecionada, // <--- Salva o array de nomes
+                dataCriacao: serverTimestamp(),
+                criadoPor: auth.currentUser.email
+            });
+            window.fecharModalEvento();
+        } catch (error) {
+            alert("Erro ao salvar: " + error.message);
+        } finally {
+            btn.innerText = txtOriginal;
+            btn.disabled = false;
         }
-        fecharModal();
-    } catch(err) {
-        alert("Erro ao salvar: " + err.message);
-    } finally {
-        btn.disabled = false;
-        btn.textContent = "Salvar Evento";
-    }
-});
+    });
+}
 
-// Editar (Função Global)
-window.editarEvento = (id) => {
-    const ev = listaEventos.find(e => e.id === id);
-    if(ev) {
-        eventIdInput.value = ev.id;
-        inpName.value = ev.nome;
-        inpDateStart.value = ev.dataInicio;
-        inpDateEnd.value = ev.dataFim;
-        inpLocal.value = ev.local;
-        inpStatus.value = ev.status;
-        if(inpType) inpType.value = ev.tipo || 'Corporativo';
-        if(inpObs) inpObs.value = ev.obs || '';
-        abrirModal('editar');
+// --- 6. EXCLUIR ---
+window.excluirEvento = async function(id) {
+    if(confirm("Excluir evento permanentemente?")) {
+        try {
+            await deleteDoc(doc(db, "eventos", id));
+        } catch (error) {
+            alert("Erro: " + error.message);
+        }
     }
-};
-
-// Excluir (Função Global)
-window.excluirEvento = async (id) => {
-    if(confirm("Tem certeza que deseja excluir este evento?")) {
-        try { await deleteDoc(doc(db, "events", id)); }
-        catch(e) { console.error(e); alert("Erro ao excluir."); }
-    }
-};
+}

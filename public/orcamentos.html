@@ -4,33 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TG Pro - Orçamento</title>
+    <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="orcamentos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
+    <nav class="navbar no-print">
+        <div class="nav-brand">
+            <img src="logo.png" alt="TG Pro Logo" class="nav-logo">
+            <span>Gerador de Orçamentos</span>
+        </div>
+        <div class="nav-links">
+            <span id="user-email" class="user-email-badge">Carregando...</span>
+            <a href="orcamentos-lista.html" class="nav-item"> Voltar as propostas</a>
+        </div>
+    </nav>
+
     <div class="workspace">
-        
-        <div class="toolbar no-print">
-            <div class="toolbar-left">
-                <button onclick="window.location.href='painel.html'" class="btn-sm">⬅ Voltar</button>
-                <button onclick="window.print()" class="btn-sm">🖨️ Imprimir / PDF</button>
-                <button onclick="salvarOrcamento()" class="btn-sm" style="background: #28a745; color: white; border: none;">💾 Salvar</button>
+
+        <div class="toolbar-section no-print">
+            <div class="toolbar-filters">
+                <div class="input-wrapper" style="max-width:200px;">
+                    <label>STATUS:</label>
+                    <select id="statusOrcamento" class="form-control" style="font-weight:bold;">
+                        <option value="Rascunho">Rascunho</option>
+                        <option value="Enviado">Enviado</option>
+                        <option value="Aprovado">Aprovado</option>
+                        <option value="Cancelado">Cancelado</option>
+                    </select>
+                </div>
             </div>
-            <div class="status-control">
-                <label>STATUS:</label>
-                <select id="statusOrcamento">
-                    <option value="Rascunho">Rascunho</option>
-                    <option value="Enviado">Enviado</option>
-                    <option value="Aprovado">Aprovado</option>
-                    <option value="Cancelado">Cancelado</option>
-                </select>
+            <div class="toolbar-actions">
+                <button onclick="window.print()" class="btn-secondary">Imprimir / PDF</button>
+                <button onclick="window.salvarOrcamento()" class="btn-primary" style="background:#28a745;">Salvar</button>
             </div>
         </div>
 
         <div class="paper-sheet" id="orcamento-paper">
-            
+
+            <!-- CABECALHO -->
             <div class="sheet-header">
                 <div class="company-details">
                     <img src="logo.png" alt="Logo" class="print-logo">
@@ -39,161 +54,212 @@
                     <div class="attendant-info">
                         <div class="info-line">
                             <label>Atendimento:</label>
-                            <input type="text" class="input-minimal" id="nomeAtendente" placeholder="Seu Nome">
+                            <input type="text" class="input-minimal" id="nomeAtendente" placeholder="Nome" readonly style="opacity:0.8;">
                         </div>
                         <div class="info-line">
                             <label>Email:</label>
-                            <input type="text" class="input-minimal" id="emailAtendente" placeholder="seuemail@tgpro.com">
+                            <input type="text" class="input-minimal" id="emailAtendente" placeholder="Email" readonly style="opacity:0.8;">
                         </div>
                         <div class="info-line">
                             <label>Whatsapp:</label>
-                            <input type="text" class="input-minimal" id="telAtendente" placeholder="(11) 99999-9999">
+                            <input type="text" class="input-minimal" id="telAtendente" placeholder="Telefone" readonly style="opacity:0.8;">
                         </div>
                     </div>
-                    <a href="https://www.tglogistica.com.br" class="site-link">WWW.TGLOGISTICA.COM.BR</a>
+                    <a href="https://www.tgproducoes.com.br" class="site-link" target="_blank">WWW.TGPRODUCOES.COM.BR</a>
                 </div>
             </div>
 
+            <!-- BARRA PROPOSTA -->
             <div class="proposal-bar">
                 <div class="prop-item">
-                    <label>PROPOSTA Nº</label>
-                    <input type="text" id="numProposta" placeholder="0000/2024">
+                    <label>PROPOSTA N</label>
+                    <input type="text" id="numProposta" placeholder="00200/2026" readonly style="opacity:0.8;">
                 </div>
                 <div class="prop-item right">
                     <label>DATA</label>
-                    <input type="text" id="dataProposta" placeholder="DD/MM/AAAA">
+                    <input type="text" id="dataProposta" readonly style="opacity:0.8;">
                 </div>
             </div>
 
-            <div class="client-section">
+            <!-- DADOS CLIENTE / EVENTO -->
+            <div class="client-section compact-layout">
                 <div class="details-grid">
                     <div class="col-left">
-                        <div class="input-row">
-                            <label>CLIENTE:</label>
-                            <div class="searchable-wrapper" style="flex:1;">
-                                <input type="text" class="paper-input searchable-input" id="buscaCliente" placeholder="Buscar Cliente..." onkeyup="buscarClienteKeyUp(this)" autocomplete="off">
+                        <div class="input-row compact-row">
+                            <label>EMPRESA:</label>
+                            <div class="searchable-wrapper">
+                                <input type="text" class="paper-input" id="buscaCliente" onkeyup="window.buscarClienteKeyUp(this)" autocomplete="off">
                                 <div class="searchable-list" id="listaClientes"></div>
                             </div>
-                            <span class="btn-plus-simple no-print" onclick="window.open('clientes.html', '_blank')" title="Novo Cliente">+</span>
+                            <span class="btn-plus-simple no-print" onclick="window.open('clientes.html','_blank')">+</span>
                         </div>
-                        <div class="input-row">
-                            <label>SOLICITANTE:</label>
-                            <input type="text" class="paper-input" id="nomeSolicitante">
+                        <div class="input-row compact-row">
+                            <label>CONTATO:</label>
+                            <input type="text" class="paper-input" id="nomeContato" placeholder="Nome da pessoa">
                         </div>
-                        <div class="input-row">
+                        <div class="input-row compact-row">
                             <label>EMAIL:</label>
                             <input type="text" class="paper-input" id="emailCliente">
                         </div>
-                    </div>
-                    <div class="col-right">
-                        <div class="input-row">
-                            <label>CNPJ:</label>
-                            <input type="text" class="paper-input" id="cnpjCliente">
-                        </div>
-                        <div class="input-row">
+                        <div class="input-row compact-row">
                             <label>TELEFONE:</label>
                             <input type="text" class="paper-input" id="telCliente">
                         </div>
-                        <div class="input-row">
-                            <label>CIDADE:</label>
-                            <input type="text" class="paper-input" id="cidadeCliente">
+                        <div class="input-row compact-row">
+                            <label>N DE PAX:</label>
+                            <input type="number" class="paper-input" id="numPax">
                         </div>
-                    </div>
-                </div>
-                
-                <div class="input-row" style="margin-top: 10px;">
-                    <label>EVENTO:</label>
-                    <input type="text" class="paper-input" id="nomeEvento" style="font-weight: bold;">
-                </div>
-                <div class="input-row">
-                    <label>LOCAL:</label>
-                    <input type="text" class="paper-input" id="localEvento">
-                </div>
-                <div class="details-grid" style="margin-top: 5px;">
-                    <div class="col-left">
-                        <div class="input-row">
-                            <label>MONTAGEM:</label>
-                            <input type="text" class="paper-input" id="dataMontagem" placeholder="DD/MM - 00h">
-                        </div>
-                        <div class="input-row">
-                            <label>INÍCIO:</label>
-                            <input type="text" class="paper-input" id="dataInicio" placeholder="DD/MM - 00h">
+                        <div class="input-row compact-row">
+                            <label>LOCAL:</label>
+                            <div class="searchable-wrapper">
+                                <input type="text" class="paper-input" id="localEvento" onkeyup="window.buscarLocalKeyUp(this)" autocomplete="off">
+                                <div class="searchable-list" id="listaLocais"></div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-right">
-                        <div class="input-row">
-                            <label>TÉRMINO:</label>
-                            <input type="text" class="paper-input" id="dataTermino" placeholder="DD/MM - 00h">
+                        <div class="input-row compact-row">
+                            <label>EVENTO:</label>
+                            <select id="tipoEvento" class="paper-input select-clean">
+                                <option value="">Selecione...</option>
+                                <option>Corporativo</option>
+                                <option>Social</option>
+                                <option>Show</option>
+                                <option>Outro</option>
+                            </select>
                         </div>
-                        <div class="input-row">
+                        <div class="input-row compact-row">
+                            <label>DATA:</label>
+                            <input type="date" class="paper-input date-input" id="dataInicio">
+                        </div>
+                        <div class="input-row compact-row">
+                            <label>MONTAGEM:</label>
+                            <input type="date" class="paper-input date-input" id="dataMontagem">
+                        </div>
+                        <div class="input-row compact-row">
+                            <label>ENSAIO:</label>
+                            <input type="date" class="paper-input date-input" id="dataEnsaio">
+                            <button type="button" class="btn-clear-date no-print" onclick="document.getElementById('dataEnsaio').value=''" title="Limpar">✕</button>
+                        </div>
+                        <div class="input-row compact-row">
                             <label>DESMONTAGEM:</label>
-                            <input type="text" class="paper-input" id="dataDesmontagem" placeholder="DD/MM - 00h">
+                            <input type="date" class="paper-input date-input" id="dataDesmontagem">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <button class="btn-sm no-print" onclick="adicionarSala()">+ ADICIONAR SALA / AMBIENTE</button>
+            <button class="btn-sm no-print" onclick="window.adicionarSala()">+ ADICIONAR SALA / AMBIENTE</button>
+            <div id="containerSalas" class="items-container"></div>
 
-            <div id="containerSalas" class="items-container">
-                </div>
-
+            <!-- TOTAIS -->
             <div class="totals-section">
-                <div class="total-row">
-                    <span>Subtotal:</span>
-                    <span id="labelSubtotal">R$ 0,00</span>
+
+                <div class="total-row total-section-title">
+                    <span style="font-weight:900;font-size:11px;text-transform:uppercase;letter-spacing:.05em;">Resumo Financeiro</span>
                 </div>
+
                 <div class="total-row">
-                    <span>Desconto:</span>
-                    <span style="display:flex; align-items:center; gap:5px;">
-                        R$ <input type="number" id="inputDesconto" value="0" style="width:80px; text-align:right; border:none; border-bottom:1px solid #ccc;" onchange="calcularTotalGeral()">
+                    <span>Equipamentos:</span>
+                    <span id="labelTotalEquip">R$ 0,00</span>
+                </div>
+
+                <div class="total-row">
+                    <span>Equipe Técnica:</span>
+                    <span id="labelTotalMaoObra">R$ 0,00</span>
+                </div>
+
+                <div class="total-row" id="rowTotalDJ" style="display:none;">
+                    <span>Serviço de DJ:</span>
+                    <span id="labelTotalDJ">R$ 0,00</span>
+                </div>
+
+                <div class="total-row" id="rowTotalBackdrop" style="display:none;">
+                    <span>Serviço de Backdrop:</span>
+                    <span id="labelTotalBackdrop">R$ 0,00</span>
+                </div>
+
+                <div class="total-row">
+                    <span>Desconto (equipamentos):</span>
+                    <span style="display:flex;align-items:center;gap:3px;" class="no-print">
+                        R$&nbsp;<input type="number" id="inputDesconto" value="0" min="0" step="0.01"
+                            style="width:75px;text-align:right;border:none;border-bottom:1px solid #999;font-weight:bold;background:transparent;color:#000;"
+                            onchange="window.calcularTotalGeral()">
                     </span>
+                    <span id="labelDesconto" class="only-print">R$ 0,00</span>
                 </div>
+
+                <div class="total-row subtotal-geral">
+                    <span>Total Geral s/ Nota:</span>
+                    <span id="labelTotalSemNota">R$ 0,00</span>
+                </div>
+
+                <div class="total-row">
+                    <span>
+                        Imposto
+                        <select id="selectImposto" class="select-imposto no-print" onchange="window.calcularTotalGeral()">
+                            <option value="0">sem imposto</option>
+                            <option value="0.14">NF 14%</option>
+                            <option value="0.10">Fatura 10%</option>
+                        </select>
+                        <span id="labelImpostoTipo" class="only-print" style="font-size:10px;color:#666;margin-left:4px;"></span>
+                    </span>
+                    <span id="labelImposto">R$ 0,00</span>
+                </div>
+
+                <div class="total-row">
+                    <span>Total c/ Imposto:</span>
+                    <span id="labelTotalComImposto">R$ 0,00</span>
+                </div>
+
+                <div class="total-row" id="rowTaxaCartao" style="display:none;">
+                    <span>Taxa Cartão (5%):</span>
+                    <span id="labelTaxaCartao">R$ 0,00</span>
+                </div>
+
+                <div class="total-row no-print">
+                    <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:11px;color:#555;font-weight:normal;">
+                        <input type="checkbox" id="chkCartao" onchange="window.calcularTotalGeral()">
+                        Pagamento por cartão (+5%)
+                    </label>
+                </div>
+
                 <div class="total-row final-total">
-                    <span>TOTAL:</span>
+                    <span>TOTAL FINAL:</span>
                     <span id="labelTotalFinal">R$ 0,00</span>
                 </div>
+
             </div>
 
+            <!-- OBSERVACOES -->
             <div class="footer-section">
-                <label style="font-weight:bold; font-size:12px;">OBSERVAÇÕES E CONDIÇÕES DE PAGAMENTO:</label>
+                <label style="font-weight:bold;font-size:12px;">OBSERVACOES E CONDICOES DE PAGAMENTO:</label>
                 <textarea id="obsGerais" rows="5"></textarea>
             </div>
 
-        </div> </div>
+        </div>
+    </div>
 
+    <!-- MODAL CATALOGO -->
     <div id="modal-catalogo-completo" class="modal-catalog-overlay">
         <div class="modal-catalog-box">
             <div class="modal-header-cat">
-                <h3><i class="fas fa-box-open"></i> Catálogo de Equipamentos</h3>
-                <button class="btn-close-modal" onclick="fecharModalCatalogo()">&times;</button>
+                <h3>Catalogo</h3>
+                <button class="btn-close-modal" onclick="window.fecharModalCatalogo()">&times;</button>
             </div>
-            
             <div class="modal-search-bar">
-                <i class="fas fa-search" style="font-size: 20px; color: #ccc; align-self: center;"></i>
-                <input type="text" id="inputBuscaModal" placeholder="Digite para filtrar (ex: Painel, LED, Cabo...)" onkeyup="filtrarTabelaCatalogo()">
+                <input type="text" id="inputBuscaModal" placeholder="Buscar..." onkeyup="window.filtrarTabelaCatalogo()">
             </div>
-
             <div class="modal-body-cat">
                 <table class="catalog-table">
-                    <thead>
-                        <tr>
-                            <th>Equipamento</th>
-                            <th>Categoria</th>
-                            <th style="text-align: right;">Preço Diária</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbodyCatalogo">
-                        </tbody>
+                    <thead><tr><th>Item</th><th>Categoria</th><th style="text-align:right;">Preco</th></tr></thead>
+                    <tbody id="tbodyCatalogo"></tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-    <script src="firebase-init.js"></script>
+    <script src="autoupdate.js"></script>
     <script src="auth-guard.js"></script>
     <script type="module" src="orcamentos.js"></script>
 </body>

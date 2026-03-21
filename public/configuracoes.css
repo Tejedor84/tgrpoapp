@@ -1,69 +1,58 @@
-/* ARQUIVO: configuracoes.css */
+/* =================================================================
+   CONFIGURACOES.CSS
+   ================================================================= */
 
-.config-panel {
-    background-color: #0a0a0a;
-    border: 1px solid #333;
-    border-radius: 8px;
-    padding: 30px;
-    max-width: 600px;
-    margin: 0 auto; /* Centraliza na tela */
+.page-container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 20px;
 }
 
-.config-panel h3 {
-    color: #FFD700;
-    margin-top: 0;
-    border-bottom: 1px solid #333;
-    padding-bottom: 10px;
+.config-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 24px;
+}
+
+.config-section h3 {
+    color: var(--primary-color);
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0 0 4px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.section-desc {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin: 8px 0 18px;
 }
 
 .input-group {
-    margin-bottom: 15px;
+    margin-bottom: 14px;
 }
 
 .input-group label {
     display: block;
-    color: #ccc;
-    margin-bottom: 5px;
-    font-size: 14px;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 12px;
-    background-color: #1a1a1a;
-    border: 1px solid #333;
-    border-radius: 5px;
-    color: #fff;
-    outline: none;
-    font-size: 16px;
-}
-
-.input-group input:focus {
-    border-color: #FFD700;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    font-weight: 500;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
 .row-dupla {
     display: flex;
-    gap: 20px;
+    gap: 16px;
 }
+
 .row-dupla .input-group {
     flex: 1;
 }
 
-.btn-primary {
-    background-color: #FFD700;
-    color: #000;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 16px;
-    width: 100%;
-    margin-top: 10px;
-    transition: 0.3s;
-}
-
-.btn-primary:hover {
-    background-color: #e6c200;
+@media (max-width: 600px) {
+    .row-dupla { flex-direction: column; gap: 0; }
 }

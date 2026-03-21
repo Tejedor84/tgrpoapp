@@ -1,182 +1,307 @@
-/* ARQUIVO: painel.css (Versão Compacta) */
+/* =================================================================
+   PAINEL.CSS - REDESIGN v2 (Agrupado, Mobile-First)
+   Usa variáveis do style.css — não redefinir cores aqui.
+   ================================================================= */
 
-body {
-    background-color: #000;
-    color: #e0e0e0;
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    /* Garante que se estourar a altura, aparece a barra de rolagem */
-    overflow-y: auto; 
-}
-
-/* Header mais fino */
+/* --- HEADER --- */
 .panel-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 30px; /* Reduzi o padding vertical */
-    background-color: #111;
-    border-bottom: 2px solid #FFD700;
-    position: sticky; /* Mantém o topo fixo se rolar */
+    padding: 14px 24px;
+    background-color: var(--bg-card);
+    border-bottom: 2px solid var(--primary-color);
+    position: sticky;
     top: 0;
     z-index: 100;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.panel-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .panel-logo {
-    height: 40px; /* Logo um pouco menor */
+    height: 36px;
+    width: auto;
+}
+
+.panel-brand-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    letter-spacing: 0.02em;
 }
 
 .user-info {
     display: flex;
     align-items: center;
-    gap: 15px;
-    font-size: 0.9em; /* Texto um pouco menor */
+    gap: 12px;
+}
+
+.user-email {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    max-width: 160px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .role-badge {
-    background-color: #333;
-    color: #FFD700;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 0.75em;
-    font-weight: bold;
+    font-size: 0.7rem;
+    font-weight: 700;
     text-transform: uppercase;
-    border: 1px solid #FFD700;
+    letter-spacing: 0.05em;
+    padding: 3px 10px;
+    border-radius: var(--radius-lg);
+    background-color: rgba(255, 215, 0, 0.1);
+    color: var(--primary-color);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    white-space: nowrap;
+}
+
+.badge-admin {
+    background-color: rgba(255, 215, 0, 0.15);
+    border-color: var(--primary-color);
+}
+
+.badge-user {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--text-muted);
+    border-color: var(--border-color);
 }
 
 .btn-logout-panel {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
     background: transparent;
-    border: 1px solid #555;
-    color: #aaa;
-    padding: 4px 12px;
-    border-radius: 4px;
+    border: 1px solid var(--danger-color);
+    color: var(--danger-color);
     cursor: pointer;
-    transition: all 0.3s;
-    font-size: 0.85em;
+    transition: all 0.2s;
+    white-space: nowrap;
 }
 
 .btn-logout-panel:hover {
-    border-color: #ef5350;
-    color: #ef5350;
+    background-color: var(--danger-color);
+    color: #fff;
 }
 
-/* Container Principal */
+/* --- CONTAINER PRINCIPAL --- */
 .panel-container {
-    max-width: 1200px;
-    margin: 20px auto; /* Margem menor */
-    padding: 0 20px 40px 20px; /* Padding no fundo para não colar na borda */
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 28px 20px 60px;
 }
 
-/* Título da Seção */
-.panel-container h2 {
-    font-size: 1.2em;
-    margin-bottom: 15px;
-    color: #FFD700;
-    border-bottom: 1px solid #333;
-    padding-bottom: 10px;
+/* --- GRUPOS DE MÓDULOS --- */
+.module-group {
+    margin-bottom: 32px;
 }
 
-/* Grid Compacto */
+.group-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #444;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* --- GRID DE MÓDULOS --- */
 .grid-modules {
     display: grid;
-    /* Reduzi a largura mínima de 180px para 130px */
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
-    gap: 12px; /* Espaço entre cartões menor */
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
 }
 
-/* Cartões Compactos */
+/* --- CARDS DE MÓDULO --- */
 .module-card {
-    background-color: #1a1a1a;
-    border: 1px solid #333;
-    border-radius: 8px;
-    padding: 15px; /* Padding interno menor */
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 18px 10px 14px;
     text-align: center;
     cursor: pointer;
-    transition: transform 0.2s, border-color 0.2s, background-color 0.2s;
+    transition: all 0.18s ease-in-out;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100px; /* Altura mínima menor */
+    gap: 10px;
+    min-height: 100px;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .module-card:hover {
-    transform: translateY(-3px); /* Movimento mais sutil */
-    border-color: #FFD700;
-    background-color: #222;
+    border-color: var(--primary-color);
+    background-color: rgba(255, 215, 0, 0.03);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 215, 0, 0.07);
+}
+
+.module-card:active {
+    transform: translateY(0);
 }
 
 .module-card .icon {
-    font-size: 28px; /* Ícone menor (era 40px) */
-    margin-bottom: 8px;
+    font-size: 1.7rem;
+    line-height: 1;
 }
 
 .module-card h3 {
-    font-size: 13px; /* Texto menor */
+    font-size: 0.8rem;
     font-weight: 500;
-    color: #ddd;
+    color: var(--text-muted);
     margin: 0;
-    line-height: 1.2;
+    line-height: 1.3;
 }
 
-/* --- ESTILO DE BLOQUEIO --- */
-.module-card.locked {
-    opacity: 0.3;
-    cursor: not-allowed;
-    filter: grayscale(100%);
-    pointer-events: none;
-    border-color: #222 !important;
-    background-color: #0d0d0d !important;
-    transform: none !important;
+/* Card em destaque (ação principal do grupo) */
+.module-card.destaque {
+    border-color: rgba(255, 215, 0, 0.25);
+    background-color: rgba(255, 215, 0, 0.04);
 }
 
-.module-card.locked::after {
-    content: "🔒";
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    font-size: 12px;
+.module-card.destaque h3 {
+    color: var(--primary-color);
 }
 
-/* Overlay de Carregamento */
+/* Card admin (visual mais discreto) */
+.module-card.admin-only h3 {
+    color: #555;
+}
+
+.module-card.admin-only:hover {
+    border-color: #555;
+    box-shadow: none;
+    background-color: var(--bg-card);
+}
+
+/* --- TELA DE CARREGAMENTO --- */
 .loading-overlay {
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-color: #000;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.92);
+    backdrop-filter: blur(6px);
     z-index: 9999;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    color: #FFD700;
+    gap: 16px;
+    color: var(--primary-color);
+}
+
+.loading-overlay p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
 }
 
 .spinner {
-    width: 30px;
-    height: 30px;
-    border: 3px solid #333;
-    border-top: 3px solid #FFD700;
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--primary-color);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 10px;
+    animation: spin 0.9s linear infinite;
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    to { transform: rotate(360deg); }
 }
 
-/* Ajuste para telas muito pequenas (Celular) */
-@media (max-width: 480px) {
+/* --- MENSAGEM SEM ACESSO --- */
+.no-access-msg {
+    text-align: center;
+    margin-top: 60px;
+    color: var(--text-muted);
+}
+
+.no-access-msg .no-access-icon {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+}
+
+.no-access-msg h3 {
+    color: var(--primary-color);
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+}
+
+.no-access-msg p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* =================================================================
+   RESPONSIVIDADE
+   ================================================================= */
+
+/* Tablet */
+@media (max-width: 800px) {
     .grid-modules {
-        grid-template-columns: repeat(3, 1fr); /* Tenta forçar 3 colunas no mobile */
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Celular */
+@media (max-width: 600px) {
+    .panel-header {
+        padding: 12px 16px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .panel-brand-name {
+        display: none; /* Logo já identifica, economiza espaço */
+    }
+
+    .user-info {
         gap: 8px;
     }
-    .module-card {
-        padding: 10px;
-        min-height: 90px;
+
+    .user-email {
+        max-width: 110px;
+        font-size: 0.75rem;
     }
-    .module-card .icon { font-size: 24px; }
-    .module-card h3 { font-size: 11px; }
+
+    .role-badge {
+        display: none; /* Remove no mobile para não lotar o header */
+    }
+
+    .panel-container {
+        padding: 20px 14px 50px;
+    }
+
+    .module-group {
+        margin-bottom: 24px;
+    }
+
+    .grid-modules {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .module-card {
+        min-height: 88px;
+        padding: 14px 8px 12px;
+        gap: 8px;
+        border-radius: var(--radius-md);
+    }
+
+    .module-card .icon {
+        font-size: 1.5rem;
+    }
+
+    .module-card h3 {
+        font-size: 0.75rem;
+    }
 }

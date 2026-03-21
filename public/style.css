@@ -1,340 +1,280 @@
-/* ARQUIVO: style.css (COMPLETO E ATUALIZADO) */
-
+/* =================================================================
+   VARIÁVEIS GLOBAIS (PALETA DE CORES E MEDIDAS)
+   ================================================================= */
 :root {
-    --primary-color: #FFD700;       /* Dourado */
-    --bg-dark: #121212;             /* Fundo Principal */
-    --bg-card: #1E1E1E;             /* Fundo de Cartões/Modais */
-    --text-color: #E0E0E0;          /* Texto Padrão */
-    --border-color: #333;           /* Bordas */
-    --danger-color: #ff4d4d;        /* Vermelho Erro/Cancelar */
-    --success-color: #00e676;       /* Verde Sucesso */
+    /* Cores Principais */
+    --primary-color: #FFD700;      /* Amarelo/Dourado TG Pro */
+    --primary-hover: #e6c200;
+    
+    /* Fundo e Superfícies (Tema Escuro) */
+    --bg-body: #121212;            /* Fundo geral da página */
+    --bg-card: #1e1e1e;            /* Fundo de tabelas e caixas */
+    --bg-input: #2a2a2a;           /* Fundo de formulários */
+    
+    /* Textos */
+    --text-main: #ffffff;          /* Texto principal */
+    --text-muted: #aaaaaa;         /* Textos secundários (labels) */
+    
+    /* Utilidades */
+    --border-color: #333333;       /* Divisórias e bordas */
+    --danger-color: #ff4d4d;       /* Botões de exclusão/erro */
+    --success-color: #4CAF50;      /* Botões de sucesso */
+    
+    /* Espaçamentos e Arredondamentos */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
 }
 
+/* =================================================================
+   RESET E TIPOGRAFIA
+   ================================================================= */
 * {
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Roboto', sans-serif;
+    box-sizing: border-box; /* Garante que bordas não quebrem o layout no celular */
 }
 
 body {
-    background-color: #000;
-    color: var(--text-color);
-    overflow-x: hidden; /* Evita rolagem horizontal */
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* --- 1. TELA DE LOGIN (LOGIN SCREEN) --- */
-.login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    width: 100%;
-    background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
-    position: fixed;
-    top: 0; left: 0;
-    z-index: 9999;
+/* =================================================================
+   PADRONIZAÇÃO DE BOTÕES (.btn-primary, .btn-secondary, .btn-danger)
+   ================================================================= */
+button {
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
 }
 
-.login-box {
-    background-color: var(--bg-card);
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-    text-align: center;
-    width: 100%;
-    max-width: 380px;
-    border: 1px solid var(--border-color);
-}
-
-.logo-img {
-    max-width: 140px;
-    margin-bottom: 25px;
-    filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.3));
-}
-
-.login-box .input-group {
-    text-align: left;
-    margin-bottom: 15px;
-}
-
-.login-box label {
-    color: #bbb;
-    font-size: 0.85em;
-    margin-bottom: 5px;
-    display: block;
-}
-
-.login-box input {
-    width: 100%;
-    padding: 12px;
-    background-color: #000;
-    border: 1px solid #333;
-    color: #fff;
-    border-radius: 6px;
-    font-size: 1em;
-    transition: border-color 0.3s;
-}
-
-.login-box input:focus {
-    border-color: var(--primary-color);
-    outline: none;
-}
-
-/* --- 2. LAYOUT GERAL (DASHBOARD CONTAINER) --- */
-.dashboard-container {
-    display: block !important;
-    width: 100%;
-    min-height: 100vh;
-    background-color: var(--bg-dark);
-}
-
-.main-content {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 20px 40px; 
-    background-color: var(--bg-dark);
-}
-
-/* --- 3. CABEÇALHO DAS PÁGINAS (TOP BAR ANTIGO) --- */
-.top-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.top-bar h2 {
-    color: var(--primary-color);
-    margin: 0;
-    font-size: 1.5em;
-    font-weight: 500;
-}
-
-.user-info {
-    font-size: 0.9em;
-    color: #888;
-}
-
-/* --- 4. BOTÕES E LINKS --- */
-.btn-back-panel {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background-color: transparent;
-    border: 1px solid #444;
-    color: #e0e0e0;
-    padding: 8px 16px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 14px;
-    transition: all 0.2s;
-    margin-right: 20px;
-}
-
-.btn-back-panel:hover {
-    background-color: #222;
-    border-color: var(--primary-color);
-    color: var(--primary-color);
-    transform: translateX(-3px);
-}
-
+/* Botão Principal (Dourado) */
 .btn-primary {
-    padding: 10px 20px;
     background-color: var(--primary-color);
     color: #000;
     border: none;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.2s, background-color 0.2s;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 1rem;
 }
 
 .btn-primary:hover {
-    background-color: #e6c200;
-    transform: scale(1.02);
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
 }
 
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+/* Botão Secundário (Cinza/Transparente) */
 .btn-secondary {
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    border: 1px solid #555;
-    background: transparent;
-    color: #ccc;
-    transition: all 0.2s;
+    background-color: transparent;
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    font-size: 1rem;
 }
 
 .btn-secondary:hover {
-    border-color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Botão de Excluir / Perigo */
+.btn-danger {
+    background-color: transparent;
+    color: var(--danger-color);
+    border: 1px solid var(--danger-color);
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+}
+
+.btn-danger:hover {
+    background-color: var(--danger-color);
     color: #fff;
 }
 
-/* --- 5. FORMULÁRIOS GERAIS --- */
-.input-group {
+/* =================================================================
+   PADRONIZAÇÃO DE INPUTS E FORMULÁRIOS
+   ================================================================= */
+.form-group {
     margin-bottom: 15px;
 }
 
-.input-group label {
+.form-group label {
     display: block;
     margin-bottom: 5px;
-    color: #aaa;
-    font-size: 0.9em;
-}
-
-.input-group input, 
-.input-group select, 
-.input-group textarea {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #333;
-    background-color: #000;
-    color: #fff;
-    outline: none;
-}
-
-.input-group input:focus,
-.input-group select:focus,
-.input-group textarea:focus {
-    border-color: var(--primary-color);
-}
-
-/* --- 6. TABELAS --- */
-.table-container {
-    overflow-x: auto;
-    background-color: var(--bg-card);
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    margin-top: 20px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 600px;
-}
-
-th, td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #333;
-}
-
-th {
-    background-color: #252525;
-    color: #FFD700;
+    color: var(--text-muted);
+    font-size: 0.9rem;
     font-weight: 500;
-    font-size: 0.9em;
-    text-transform: uppercase;
 }
 
-tr:hover {
-    background-color: #2a2a2a;
+.form-control,
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+select,
+textarea {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-main);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
 }
 
-/* --- 7. MODAIS --- */
-.modal {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.85);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
+/* Destaque ao clicar no campo */
+.form-control:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+}
+
+/* =================================================================
+   LAYOUT BASE E RESPONSIVIDADE (MOBILE)
+   ================================================================= */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 20px;
 }
 
-.modal.hidden {
-    display: none !important;
-}
-
-.modal-content {
+/* Cards padrão para painéis e modais */
+.card {
     background-color: var(--bg-card);
-    padding: 30px;
-    border-radius: 10px;
-    width: 100%;
-    max-width: 550px;
-    position: relative;
+    border-radius: var(--radius-md);
     border: 1px solid var(--border-color);
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-.close-btn {
-    position: absolute;
-    top: 15px; right: 20px;
-    font-size: 28px;
-    cursor: pointer;
-    color: #888;
-    line-height: 1;
-}
-
-.close-btn:hover { color: #fff; }
-
-/* --- 8. BADGES DE STATUS --- */
-.status-badge {
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 0.75em;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-.status-pendente { background-color: #ff9800; color: #000; }
-.status-confirmado, .status-pago, .status-ativo { background-color: #00e676; color: #000; }
-.status-cancelado, .status-inativo { background-color: #ff4d4d; color: #fff; }
-.status-finalizado { background-color: #2196f3; color: #fff; }
-
-/* --- 9. ELEMENTOS REMOVIDOS/ESCONDIDOS --- */
-.sidebar, .sidebar-menu, .mobile-header-bar, #mobileMenuBtn, #mobileOverlay {
-    display: none !important;
-}
-
+/* REGRAS PARA CELULAR (Telas menores que 768px) */
 @media (max-width: 768px) {
-    .main-content { padding: 15px; }
-    .top-bar { flex-direction: column; align-items: flex-start; gap: 15px; }
-    .top-bar h2 { font-size: 1.3em; }
-    .btn-back-panel { margin-right: 0; width: 100%; justify-content: center; }
+    /* Ajusta o espaçamento geral */
+    .container {
+        padding: 15px;
+    }
+
+    /* Títulos ficam um pouco menores no celular */
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    /* Botões ocupam a largura toda para ficar fácil de clicar com o dedo */
+    .btn-primary, .btn-secondary, .btn-danger {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 15px; /* Botão mais "gordinho" pro dedo */
+        display: block;
+        text-align: center;
+    }
+
+    /* Transforma grupos flexíveis (que ficavam lado a lado) em listas um em cima do outro */
+    .flex-row, .modal-actions {
+        flex-direction: column !important;
+        gap: 10px;
+    }
 }
 
-/* --- 10. PADRONIZAÇÃO DE CABEÇALHO E LOGO (NOVO) --- */
-header {
+/* =================================================================
+   NAVBAR GLOBAL — padrão único para todos os módulos
+   ================================================================= */
+.navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
-    background-color: #1e1e1e;
-    border-bottom: 2px solid #FFD700;
-    margin-bottom: 20px;
+    background-color: var(--bg-card);
+    padding: 12px 24px;
+    border-bottom: 2px solid var(--primary-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
-.logo-area {
+.nav-brand {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-decoration: none;
 }
 
-.logo {
-    height: 50px; /* Altura Fixa para Padronização */
+.nav-logo {
+    height: 36px;
     width: auto;
     object-fit: contain;
 }
 
-header h1 {
-    color: #FFD700;
-    font-size: 1.5rem;
-    margin: 0;
+.nav-title {
+    font-size: 1rem;
     font-weight: 500;
+    color: var(--text-main);
 }
 
-header .user-info {
+.nav-links {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 16px;
+}
+
+.user-email-badge {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.nav-item {
+    color: var(--text-main);
+    text-decoration: none;
+    font-size: 0.88rem;
+    padding: 7px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    transition: border-color 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+
+.nav-item:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+/* Container padrão abaixo do navbar */
+.page-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 24px 20px;
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        padding: 10px 14px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .nav-title {
+        display: none;
+    }
+    .user-email-badge {
+        display: none;
+    }
+    .nav-item {
+        font-size: 0.8rem;
+        padding: 6px 10px;
+    }
 }

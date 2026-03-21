@@ -5,41 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TG Log - Cronograma</title>
     <link rel="icon" type="image/png" href="logo.png">
-    
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="cronograma.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
 
     <div class="dashboard-container">
         <main class="main-content">
             
             <header class="top-bar">
-                <div style="display: flex; align-items: center;">
-                    <a href="painel.html" class="btn-back-panel">⬅ Voltar ao Painel</a>
-                    <h2>Agenda Logística</h2>
-                </div>
-                <div class="user-info">
-                    <span id="user-email">Carregando...</span>
-                </div>
+                <nav class="navbar">
+                    <div class="nav-brand">
+                        <img src="logo.png" alt="TG Pro Logo" class="nav-logo">
+                        <span>Agenda Logística</span>
+                    </div>
+    
+                    <div class="nav-links">
+                        <span id="userEmail" class="user-email-badge">Carregando...</span>
+                        <a href="painel.html" class="nav-item">⬅ Voltar ao Painel</a>
+                    </div>
+                </nav>
             </header>
 
             <div class="toolbar-section">
-                
                 <div class="toolbar-filters">
                     <div class="input-wrapper">
-                        <label>Filtrar Data</label>
+                        <label>Data</label>
                         <input type="date" id="filterDate">
                     </div>
                     <div class="input-wrapper" style="flex: 1;">
-                        <label>Buscar Texto</label>
-                        <input type="text" id="filterText" placeholder="Nome, local, equipe...">
+                        <label>Buscar (Título, Local, Equipe)</label>
+                        <input type="text" id="filterText" placeholder="Digite para filtrar...">
                     </div>
                 </div>
 
                 <div class="toolbar-actions">
+                    <button id="btnToday" class="btn-secondary">📅 Hoje</button>
                     <button id="btnHistory" class="btn-secondary">📜 Histórico</button>
                     <button id="btnCopy" class="btn-secondary" title="Copiar p/ WhatsApp">📋 Copiar</button>
                     <button id="btnAdd" class="btn-primary">+ Nova Atividade</button>
@@ -56,23 +58,23 @@
     <div id="modalTask" class="modal hidden">
         <div class="modal-content">
             <span id="closeModal" class="close-btn">&times;</span>
-            <h3 id="modalTitle" style="color: #FFD700; margin-bottom: 20px;">Atividade</h3>
+            <h3 style="color: #FFD700; margin-bottom: 20px;">Detalhes da Atividade</h3>
             
             <form id="formTask">
                 <input type="hidden" id="taskId">
                 
                 <div class="row-dupla">
                     <div class="input-group" style="flex: 1;">
-                        <label>Data</label>
+                        <label>1. Data</label>
                         <input type="date" id="inpDate" required>
                     </div>
                     
                     <div class="input-group" style="flex: 1;">
-                        <label>Hora</label>
+                        <label>2. Hora</label>
                         <div style="display: flex; gap: 10px; align-items: center;">
                             <input type="time" id="inpTime" style="flex:1;">
-                            <div style="display: flex; align-items: center; gap: 5px; white-space: nowrap;">
-                                <input type="checkbox" id="chkNoTime" style="width: auto;">
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <input type="checkbox" id="chkNoTime">
                                 <label for="chkNoTime" style="margin:0; font-size:0.9em; cursor:pointer;">A definir</label>
                             </div>
                         </div>
@@ -80,51 +82,53 @@
                 </div>
 
                 <div class="input-group">
-                    <label>Título da Atividade</label>
-                    <input type="text" id="inpTitle" required placeholder="Ex: Montagem de Palco">
+                    <label>3. Título da Atividade</label>
+                    <input type="text" id="inpTitle" required placeholder="Ex: Montagem Estrutura">
                 </div>
 
                 <div class="input-group">
-                    <label>Local</label>
-                    <input type="text" id="inpLocal" placeholder="Local do evento ou serviço">
+                    <label>4. Local da Atividade (Banco de Dados)</label>
+                    <select id="inpLocal">
+                        <option value="">Selecione um local...</option>
+                        </select>
                 </div>
 
                 <div class="input-group">
-                    <label>Equipe Responsável</label>
-                    <textarea id="inpTeam" rows="3" placeholder="Digite os nomes (Tecle Enter para pular linha)..."></textarea>
+                    <label>5. Equipe Responsável</label>
+                    <textarea id="inpTeam" rows="3" placeholder="Digite os nomes (um por linha)..."></textarea>
                 </div>
 
                 <div class="input-group">
-                    <label style="color: #ff4d4d; font-weight: bold;">Pendências (Alerta)</label>
-                    <input type="text" id="inpPending" placeholder="O que falta fazer? (Deixe vazio se ok)" style="border-color: #ff4d4d;">
+                    <label style="color: #ff4d4d; font-weight: bold;">6. Pendências</label>
+                    <textarea id="inpPending" rows="2" placeholder="O que falta para terminar?" style="border-color: #ff4d4d;"></textarea>
                 </div>
 
                 <div class="input-group">
-                    <label>Detalhes / Observações</label>
-                    <textarea id="inpDetails" rows="3"></textarea>
+                    <label>7. Detalhes / Observações</label>
+                    <textarea id="inpDetails" rows="4" placeholder="Adicione tópicos informativos para a equipe..."></textarea>
                 </div>
 
                 <div class="comentarios-section">
-                    <h3><i class="fas fa-comments"></i> Comentários da Atividade</h3>
-                    
+                    <label>8. Comentários da Equipe</label>
                     <div id="lista-comentarios" class="comentarios-lista">
-                        <div class="empty-state">Salve a atividade para comentar.</div>
+                        <div class="empty-state">Salve a atividade para habilitar.</div>
                     </div>
-
                     <div class="comentarios-input-area" style="display: none;">
                         <input type="text" id="novo-comentario" placeholder="Escreva um comentário..." autocomplete="off">
-                        <button type="button" onclick="window.enviarComentario()" class="btn-send"><i class="fas fa-paper-plane"></i></button>
+                        <button type="button" id="btnSendComment" class="btn-send"><i class="fas fa-paper-plane"></i></button>
                     </div>
                 </div>
+
                 <div class="form-actions" style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
                     <button type="button" id="btnCancel" class="btn-secondary">Cancelar</button>
-                    <button type="submit" class="btn-primary">Salvar</button>
+                    <button type="submit" class="btn-primary">Salvar Atividade</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <script src="autoupdate.js"></script> <script src="auth-guard.js"></script>
+    <script src="autoupdate.js"></script> 
+    <script src="auth-guard.js"></script>
     <script type="module" src="cronograma.js"></script>
 </body>
 </html>

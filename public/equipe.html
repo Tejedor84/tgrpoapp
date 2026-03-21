@@ -12,17 +12,19 @@
 </head>
 <body>
 
-    <div class="dashboard-container">
-        
-        <header class="top-bar">
-            <div style="display: flex; align-items: center;">
-                <a href="painel.html" class="btn-back-panel">⬅ Voltar</a>
-                <h2>Equipe e Desempenho</h2>
-            </div>
-            <button id="btnAddMember" class="btn-primary">+ Novo Colaborador</button>
-        </header>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <img src="logo.png" alt="TG Pro" class="nav-logo">
+            <span class="nav-title">Equipe e Desempenho</span>
+        </div>
+        <div class="nav-links">
+            <span id="user-email" class="user-email-badge">Carregando...</span>
+            <a href="painel.html" class="nav-item">⬅ Voltar ao Painel</a>
+        </div>
+    </nav>
 
-        <main class="main-content">
+
+        <main class="page-container">
             
             <div id="equipeGrid" class="team-grid">
                 <p class="loading-msg">Carregando equipe...</p>

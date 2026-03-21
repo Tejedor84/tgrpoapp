@@ -1,50 +1,96 @@
 /* =================================================================
-   LOCAIS.JS - VERSÃO V10 COMPLETA E FUNCIONAL
+   LOCAIS.JS - PADRONIZADO COM BUSCA INTELIGENTE
    ================================================================= */
 
-import { db } from './firebase-init.js';
-import { 
-    collection, 
-    addDoc, 
-    getDocs, 
-    deleteDoc, 
-    doc, 
-    query, 
-    orderBy,
-    serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { auth, db } from './firebase-init.js';
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { collection, addDoc, deleteDoc, doc, query, orderBy, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// Inicialização
+let locaisCadastrados = [];
+const filterText = document.getElementById('filterText');
+
+// --- INICIALIZAÇÃO E AUTENTICAÇÃO ---
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        document.getElementById('user-email').textContent = user.email;
+        iniciarListenerLocais();
+    } else {
+        window.location.href = "index.html";
+    }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("Sistema de Locais Iniciado.");
-    listarLocais();
-    
-    // Configura fechar modal ao clicar fora
+    // Fechar modal ao clicar fora
     const modal = document.getElementById('modalLocal');
     window.onclick = function(event) {
         if (event.target == modal) {
-            fecharModal();
+            window.fecharModal();
         }
     }
 });
 
-/* =================================================================
-   FUNÇÕES DE MODAL (Essenciais para o botão funcionar)
-   ================================================================= */
+// --- OUVINTE EM TEMPO REAL E RENDERIZAÇÃO ---
+function iniciarListenerLocais() {
+    const q = query(collection(db, "locais"), orderBy("nome"));
+    
+    onSnapshot(q, (snapshot) => {
+        locaisCadastrados = [];
+        snapshot.forEach(doc => {
+            locaisCadastrados.push({ id: doc.id, ...doc.data() });
+        });
+        renderizarLocais();
+    }, (error) => {
+        console.error("Erro ao carregar locais:", error);
+    });
+}
 
+function renderizarLocais() {
+    const lista = document.getElementById('lista-locais');
+    const termo = filterText.value.toLowerCase().trim();
+
+    lista.innerHTML = '';
+
+    const filtrados = locaisCadastrados.filter(local => {
+        const nome = (local.nome || "").toLowerCase();
+        const endereco = (local.endereco || "").toLowerCase();
+        const obs = (local.obs || "").toLowerCase();
+        
+        return nome.includes(termo) || endereco.includes(termo) || obs.includes(termo);
+    });
+
+    if (filtrados.length === 0) {
+        lista.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhum local encontrado.</td></tr>';
+        return;
+    }
+
+    filtrados.forEach((local) => {
+        const tr = document.createElement('tr');
+        
+        tr.innerHTML = `
+            <td><strong>${local.nome || 'Sem nome'}</strong></td>
+            <td>${local.endereco || '-'}</td>
+            <td>${local.obs || '-'}</td>
+            <td style="text-align:center;">
+                <button class="btn-icon" onclick="excluirLocal('${local.id}')" title="Excluir" style="color:var(--danger-color);">
+                    🗑️
+                </button>
+            </td>
+        `;
+        lista.appendChild(tr);
+    });
+}
+
+// Atualiza a tabela enquanto digita
+if(filterText) filterText.addEventListener('input', renderizarLocais);
+
+// --- FUNÇÕES DE MODAL ---
 window.abrirModal = function() {
     const modal = document.getElementById('modalLocal');
     if (modal) {
         modal.classList.remove('hidden');
-        modal.style.display = 'block'; // Garante que apareça
-        
-        // Foca no primeiro campo
         setTimeout(() => {
-            const input = document.getElementById('nomeLocal');
-            if(input) input.focus();
+            document.getElementById('nomeLocal').focus();
         }, 100);
-    } else {
-        console.error("Erro: Modal com id 'modalLocal' não encontrado no HTML.");
     }
 }
 
@@ -52,39 +98,21 @@ window.fecharModal = function() {
     const modal = document.getElementById('modalLocal');
     if (modal) {
         modal.classList.add('hidden');
-        modal.style.display = 'none';
-        
-        // Limpa formulário ao fechar
-        const form = document.getElementById('formLocal');
-        if(form) form.reset();
+        document.getElementById('formLocal').reset();
     }
 }
 
-/* =================================================================
-   FUNÇÕES DE BANCO DE DADOS
-   ================================================================= */
-
-// 1. SALVAR NOVO LOCAL
+// --- SALVAR E EXCLUIR ---
 window.salvarLocal = async function(event) {
-    // Evita recarregar a página se for chamado por um form submit
     if(event) event.preventDefault();
 
-    const nomeInput = document.getElementById('nomeLocal');
-    const endInput = document.getElementById('enderecoLocal');
-    const obsInput = document.getElementById('obsLocal');
-    
-    const nome = nomeInput.value.trim();
-    const endereco = endInput ? endInput.value.trim() : "";
-    const obs = obsInput ? obsInput.value.trim() : "";
+    const nome = document.getElementById('nomeLocal').value.trim();
+    const endereco = document.getElementById('enderecoLocal').value.trim();
+    const obs = document.getElementById('obsLocal').value.trim();
 
-    if (!nome) {
-        alert("Por favor, digite o nome do local.");
-        return;
-    }
+    if (!nome) return alert("Por favor, digite o nome do local.");
 
-    const btnSalvar = document.getElementById('btnSalvar') || document.querySelector('button[type="submit"]');
-    const txtOriginal = btnSalvar ? btnSalvar.innerText : "Salvar";
-    
+    const btnSalvar = document.getElementById('btnSalvar');
     if (btnSalvar) {
         btnSalvar.innerText = "Salvando...";
         btnSalvar.disabled = true;
@@ -95,71 +123,26 @@ window.salvarLocal = async function(event) {
             nome: nome,
             endereco: endereco,
             obs: obs,
-            dataCriacao: serverTimestamp()
+            dataCriacao: serverTimestamp(),
+            criadoPor: auth.currentUser ? auth.currentUser.email : "Admin"
         });
         
-        alert("Local salvo com sucesso!");
         window.fecharModal();
-        listarLocais(); // Atualiza a lista
-
     } catch (error) {
         console.error("Erro ao salvar local:", error);
         alert("Erro ao salvar: " + error.message);
     } finally {
         if (btnSalvar) {
-            btnSalvar.innerText = txtOriginal;
+            btnSalvar.innerText = "Salvar Local";
             btnSalvar.disabled = false;
         }
     }
 }
 
-// 2. LISTAR LOCAIS
-async function listarLocais() {
-    const lista = document.getElementById('lista-locais');
-    if (!lista) return;
-
-    lista.innerHTML = '<tr><td colspan="4" style="text-align:center;">Carregando...</td></tr>';
-
-    try {
-        const q = query(collection(db, "locais"), orderBy("nome"));
-        const querySnapshot = await getDocs(q);
-        
-        lista.innerHTML = '';
-        
-        if (querySnapshot.empty) {
-            lista.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhum local cadastrado.</td></tr>';
-            return;
-        }
-
-        querySnapshot.forEach((doc) => {
-            const local = doc.data();
-            const tr = document.createElement('tr');
-            
-            tr.innerHTML = `
-                <td><strong>${local.nome || 'Sem nome'}</strong></td>
-                <td>${local.endereco || '-'}</td>
-                <td>${local.obs || '-'}</td>
-                <td style="text-align:center;">
-                    <button class="btn-delete" onclick="excluirLocal('${doc.id}')" style="cursor:pointer; border:none; background:transparent; font-size:1.2em;" title="Excluir">
-                        🗑️
-                    </button>
-                </td>
-            `;
-            lista.appendChild(tr);
-        });
-
-    } catch (error) {
-        console.error("Erro ao listar:", error);
-        lista.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">Erro ao carregar dados. Verifique o console.</td></tr>';
-    }
-}
-
-// 3. EXCLUIR LOCAL
 window.excluirLocal = async function(id) {
     if (confirm("Tem certeza que deseja excluir este local?")) {
         try {
             await deleteDoc(doc(db, "locais", id));
-            listarLocais(); // Atualiza a tabela
         } catch (error) {
             console.error("Erro ao excluir:", error);
             alert("Erro ao excluir: " + error.message);

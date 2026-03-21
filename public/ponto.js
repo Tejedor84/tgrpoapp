@@ -1,4 +1,5 @@
 import { auth, db } from "./firebase-init.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { collection, addDoc, onSnapshot, query, orderBy, where, doc, updateDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const pontoBody = document.getElementById('pontoBody');
@@ -9,6 +10,7 @@ const formPonto = document.getElementById('formPonto');
 const inpUser = document.getElementById('inpUser');
 const inpStatus = document.getElementById('inpStatus');
 const timeFields = document.getElementById('timeFields');
+const userEmailSpan = document.getElementById('userEmail');
 
 let registros = [];
 let colaboradores = [];
@@ -20,7 +22,6 @@ filterMonth.value = `${agora.getFullYear()}-${String(agora.getMonth() + 1).padSt
 // --- CARREGAR COLABORADORES (DA COLEÇÃO EQUIPE) ---
 async function carregarColaboradores() {
     try {
-        // Tenta buscar na coleção "equipe" primeiro
         const q = query(collection(db, "equipe"), orderBy("nome"));
         const snap = await getDocs(q);
         
@@ -30,7 +31,6 @@ async function carregarColaboradores() {
 
         if (snap.empty) {
             console.warn("Nenhum colaborador encontrado na coleção 'equipe'. Tentando 'usuarios'...");
-            // Fallback: Se não tiver ninguém em equipe, tenta em usuarios
             const qUsers = query(collection(db, "usuarios"), orderBy("nome"));
             const snapUsers = await getDocs(qUsers);
             snapUsers.forEach(processarDoc);
@@ -45,23 +45,20 @@ async function carregarColaboradores() {
 
 function processarDoc(doc) {
     const data = doc.data();
-    // Garante que tenha nome e email (ou usa o ID se não tiver email)
     const user = { 
         id: doc.id, 
         nome: data.nome || "Sem Nome", 
-        email: data.email || doc.id // Usa o ID como identificador se não tiver email
+        email: data.email || doc.id 
     };
     colaboradores.push(user);
     
-    // Popula os selects
     const opt = `<option value="${user.email}">${user.nome}</option>`;
     filterUser.innerHTML += opt;
     inpUser.innerHTML += opt;
 }
 
-// Escuta mudanças no Status para esconder horários se for Folga/Feriado
 inpStatus.addEventListener('change', () => {
-    if (["Folga", "Descanso", "Feriado", "Falta", "Atestado"].includes(inpStatus.value)) {
+    if (["Folga", "Descanso", "Feriado", "Falta", "Atestado", "Ferias"].includes(inpStatus.value)) {
         timeFields.style.display = "none";
     } else {
         timeFields.style.display = "flex";
@@ -83,7 +80,7 @@ function iniciarListenerPonto() {
 function renderizarPonto() {
     pontoBody.innerHTML = "";
     const selUser = filterUser.value;
-    const selMonth = filterMonth.value; // Formato YYYY-MM
+    const selMonth = filterMonth.value; 
 
     const filtrados = registros.filter(r => {
         const matchUser = selUser === "" || r.usuarioEmail === selUser;
@@ -98,11 +95,7 @@ function renderizarPonto() {
 
     filtrados.forEach(r => {
         const tr = document.createElement('tr');
-        
-        // Formatar data para exibição
         const dataBR = r.data ? r.data.split('-').reverse().join('/') : "--/--/----";
-        
-        // Busca o nome do colaborador na lista carregada
         const colabEncontrado = colaboradores.find(c => c.email === r.usuarioEmail);
         const nomeColab = colabEncontrado ? colabEncontrado.nome : (r.usuarioEmail || "Desconhecido");
 
@@ -123,14 +116,16 @@ function renderizarPonto() {
 }
 
 // CRUD
-document.getElementById('btnManualLaunch').onclick = () => {
-    formPonto.reset();
-    document.getElementById('pontoId').value = "";
-    timeFields.style.display = "flex";
-    modalPonto.classList.remove('hidden');
-};
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('btnManualLaunch').addEventListener('click', () => {
+        formPonto.reset();
+        document.getElementById('pontoId').value = "";
+        timeFields.style.display = "flex";
+        modalPonto.classList.remove('hidden');
+    });
 
-document.getElementById('btnCancel').onclick = () => modalPonto.classList.add('hidden');
+    document.getElementById('btnCancel').addEventListener('click', () => modalPonto.classList.add('hidden'));
+});
 
 formPonto.onsubmit = async (e) => {
     e.preventDefault();
@@ -141,7 +136,7 @@ formPonto.onsubmit = async (e) => {
         data: document.getElementById('inpDate').value,
         status: document.getElementById('inpStatus').value,
         entrada: document.getElementById('inpEntry').value || "",
-        saida: document.getElementById('inpExit').value || "", // Corrigido typo inpExit.
+        saida: document.getElementById('inpExit').value || "",
         observacoes: document.getElementById('inpObs').value,
         editadoPor: auth.currentUser ? auth.currentUser.email : "Admin",
         timestamp: new Date().toISOString()
@@ -185,9 +180,13 @@ window.excluirPonto = async (id) => {
     }
 };
 
-// Inicialização
-auth.onAuthStateChanged(user => {
+// Inicialização (Agora com a função correta!)
+onAuthStateChanged(auth, (user) => {
     if (user) {
+        if (userEmailSpan) {
+            userEmailSpan.textContent = user.email;
+        }
+
         carregarColaboradores().then(() => {
             iniciarListenerPonto();
         });

@@ -1,94 +1,149 @@
-/* ARQUIVO: ponto.css */
+/* =================================================================
+   PONTO.CSS - PADRONIZADO E RESPONSIVO
+   ================================================================= */
 
-/* A tabela herda o padrão do style.css, aqui ajustamos apenas detalhes específicos */
-
-.table-container {
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-
-th {
-    letter-spacing: 1px;
-}
-
-/* Badges de Status Específicos do Ponto */
-.badge-status {
-    padding: 5px 10px;
-    border-radius: 15px;
-    font-size: 0.7rem;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-.Trabalho { background: #2ecc71; color: #000; }
-.Folga { background: #3498db; color: #fff; }
-.Descanso { background: #9b59b6; color: #fff; }
-.Feriado { background: #f1c40f; color: #000; }
-.Falta { background: #e74c3c; color: #fff; }
-.Atestado { background: #95a5a6; color: #000; }
-
-.obs-cell {
-    max-width: 150px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-style: italic;
-    color: #aaa;
-}
-
-.controls {
+/* --- NAVBAR SUPERIOR --- */
+.navbar {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
-    gap: 20px;
-    background: #1e1e1e;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #333;
+    align-items: center;
+    background-color: var(--bg-card);
+    padding: 15px 30px;
+    border-bottom: 1px solid var(--border-color);
     margin-bottom: 20px;
 }
 
-.filters {
-    display: flex;
-    gap: 15px;
+.nav-brand {
+    display: flex; align-items: center; gap: 15px;
+    font-size: 1.2rem; font-weight: bold; color: var(--primary-color);
 }
 
-.filter-group {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+.nav-logo { height: 40px; }
+
+.nav-links { display: flex; align-items: center; gap: 15px; }
+
+.user-email-badge { color: var(--text-muted); font-size: 0.85rem; }
+
+.nav-item {
+    color: var(--text-main); text-decoration: none; font-size: 0.9rem;
+    padding: 8px 15px; border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm); transition: all 0.2s;
 }
 
-.filter-group label {
-    font-size: 0.8rem;
-    color: #FFD700;
+.nav-item:hover {
+    background-color: #333; border-color: var(--primary-color);
+    color: var(--primary-color);
 }
 
-.row {
-    display: flex;
-    gap: 10px;
+/* --- BARRA DE FERRAMENTAS / FILTROS --- */
+.toolbar-section {
+    background-color: var(--bg-card); border: 1px solid var(--border-color);
+    border-radius: var(--radius-md); padding: 20px; margin-bottom: 30px;
+    display: flex; flex-wrap: wrap; gap: 20px;
+    align-items: flex-end; justify-content: space-between;
 }
 
-.row .input-group { flex: 1; }
+.toolbar-filters {
+    display: flex; gap: 15px; flex: 1; min-width: 300px;
+}
 
+.input-wrapper { flex: 1; }
+.input-wrapper label {
+    display: block; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 5px;
+}
+
+.toolbar-actions { display: flex; gap: 10px; }
+
+/* --- TABELA DE EXIBIÇÃO --- */
+.card-table {
+    background-color: var(--bg-card); border-radius: var(--radius-md);
+    border: 1px solid var(--border-color); overflow-x: auto;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+.tabela-padrao {
+    width: 100%; border-collapse: collapse; 
+    min-width: 700px; /* Garante scroll no celular para os dados não se misturarem */
+}
+
+.tabela-padrao th {
+    background-color: #252525; color: var(--text-main); font-weight: 600;
+    text-transform: uppercase; font-size: 0.85rem; padding: 15px;
+    text-align: left; border-bottom: 2px solid var(--border-color);
+}
+
+.tabela-padrao td {
+    padding: 12px 15px; border-bottom: 1px solid var(--border-color);
+    color: #ddd; font-size: 0.9rem; vertical-align: middle;
+}
+
+.tabela-padrao tr:hover { background-color: rgba(255, 215, 0, 0.05); }
+
+/* --- BADGES DE STATUS (Mais modernos) --- */
+.badge-status {
+    padding: 5px 10px; border-radius: 6px; font-size: 0.75rem;
+    font-weight: bold; text-transform: uppercase; display: inline-block;
+}
+
+.Trabalho { background: rgba(46, 204, 113, 0.15); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.3); }
+.Folga    { background: rgba(52, 152, 219, 0.15); color: #3498db; border: 1px solid rgba(52, 152, 219, 0.3); }
+.Descanso { background: rgba(155, 89, 182, 0.15); color: #9b59b6; border: 1px solid rgba(155, 89, 182, 0.3); }
+.Feriado  { background: rgba(241, 196, 15, 0.15); color: #f1c40f; border: 1px solid rgba(241, 196, 15, 0.3); }
+.Falta    { background: rgba(231, 76, 60, 0.15);  color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.3); }
+.Atestado { background: rgba(149, 165, 166, 0.15); color: #bdc3c7; border: 1px solid rgba(149, 165, 166, 0.3); }
+.Ferias   { background: rgba(26, 188, 156, 0.15);  color: #1abc9c; border: 1px solid rgba(26, 188, 156, 0.3); }
+
+/* Ocultar texto muito grande na observação */
+.obs-cell {
+    max-width: 150px; white-space: nowrap; overflow: hidden;
+    text-overflow: ellipsis; font-style: italic; color: #888;
+}
+
+/* Botões da Tabela (Lápis e Lixeira) */
 .btn-edit, .btn-delete {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.1rem;
-    transition: transform 0.2s;
+    background: transparent; border: none; font-size: 1.2rem;
+    cursor: pointer; transition: transform 0.2s; opacity: 0.7; margin: 0 5px;
+}
+.btn-edit:hover, .btn-delete:hover { opacity: 1; transform: scale(1.2); }
+
+/* --- MODAL FLUTUANTE (POPUP) --- */
+.modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.85); z-index: 9999;
+    display: flex; justify-content: center; align-items: center;
+    backdrop-filter: blur(4px);
 }
 
-.btn-edit:hover, .btn-delete:hover {
-    transform: scale(1.2);
+.modal.hidden { display: none !important; }
+
+.modal-content {
+    background-color: var(--bg-card); width: 90%; max-width: 500px;
+    border-radius: var(--radius-md); padding: 25px;
+    border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
+.modal-header {
+    margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;
+}
+
+.modal-header h2 { color: var(--primary-color); margin: 0; }
+
+.row-dupla { display: flex; gap: 15px; margin-bottom: 15px; }
+
+.modal-actions {
+    display: flex; justify-content: flex-end; gap: 15px;
+    margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 20px;
+}
+
+/* --- RESPONSIVIDADE (CELULAR E TABLET) --- */
 @media (max-width: 768px) {
-    .controls {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .filters {
-        flex-direction: column;
-        width: 100%;
-    }
+    .navbar { flex-direction: column; padding: 15px; gap: 15px; }
+    .nav-links { width: 100%; justify-content: space-between; }
+    
+    .toolbar-section { flex-direction: column; align-items: stretch; padding: 15px; gap: 15px; }
+    .toolbar-filters { flex-direction: column; gap: 10px; }
+    .toolbar-actions { width: 100%; }
+    .toolbar-actions button { width: 100%; }
+    
+    .row-dupla { flex-direction: column; gap: 0; }
 }

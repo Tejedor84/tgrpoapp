@@ -3,32 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TG Log - Dashboard</title>
+    <title>TG Pro - Dashboard</title>
     <link rel="icon" type="image/png" href="logo.png">
     
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
 
-    <div class="dashboard-container">
+    <nav class="navbar">
+        <div class="nav-brand">
+            <img src="logo.png" alt="TG Pro Logo" class="nav-logo">
+            <span>Dashboard / Visão Geral</span>
+        </div>
         
-        <header class="top-bar">
-            <div style="display: flex; align-items: center;">
-                <a href="painel.html" class="btn-back-panel">⬅ Voltar ao Painel</a>
-                <h2>Visão Geral</h2>
-            </div>
-            <div class="user-info">
-                <span id="userEmail">Carregando...</span>
-            </div>
-        </header>
+        <div class="nav-links">
+            <span id="userEmail" class="user-email-badge">Carregando...</span>
+            <a href="painel.html" class="nav-item">⬅ Voltar ao Painel</a>
+        </div>
+    </nav>
 
+    <div class="container">
+        
         <main class="main-content">
             
             <div class="kpi-grid">
                 
-                <div class="kpi-card alert" onclick="window.location.href='pendencias.html'" style="cursor: pointer;">
+                <div class="kpi-card danger-card" onclick="window.location.href='pendencias.html'">
                     <div class="icon">⚠️</div>
                     <div class="info">
                         <h3>Pendências</h3>
@@ -37,7 +39,7 @@
                     </div>
                 </div>
 
-                <div class="kpi-card primary" onclick="window.location.href='eventos.html'" style="cursor: pointer;">
+                <div class="kpi-card primary-card" onclick="window.location.href='eventos.html'">
                     <div class="icon">📅</div>
                     <div class="info">
                         <h3>Próximos Eventos</h3>
@@ -46,7 +48,7 @@
                     </div>
                 </div>
 
-                <div class="kpi-card info">
+                <div class="kpi-card info-card">
                     <div class="icon" id="weatherIcon">⛅</div>
                     <div class="info">
                         <h3 id="weatherCity">Clima Local</h3>
@@ -62,7 +64,7 @@
                 <section class="panel-section">
                     <div class="section-header">
                         <h3>📆 Próximos Eventos</h3>
-                        <button class="btn-small" onclick="window.location.href='eventos.html'">Ver Todos</button>
+                        <button class="btn-secondary btn-small" onclick="window.location.href='eventos.html'">Ver Todos</button>
                     </div>
                     <ul id="eventList" class="event-list">
                         <li class="loading-item">Buscando agenda...</li>
@@ -73,20 +75,24 @@
                     <div class="quick-actions">
                         <h3>⚡ Acesso Rápido</h3>
                         
-                        <button onclick="window.location.href='cronograma.html'">Novo Cronograma</button>
-                        <button onclick="window.location.href='orcamentos.html'">Gerar Orçamento</button>
+                        <button class="btn-primary" onclick="window.location.href='cronograma.html'">Novo Cronograma</button>
+                        <button class="btn-primary" onclick="window.location.href='orcamentos.html'">Gerar Orçamento</button>
                         
-                        <button onclick="window.location.href='clientes.html'" style="margin-top: 10px; background-color: #2c3e50;">👥 Gerenciar Clientes</button>
-                        <button onclick="window.location.href='agencias.html'" style="background-color: #2c3e50;">🏢 Gerenciar Agências</button>
-                        <button onclick="window.location.href='equipamentos.html'" style="background-color: #2c3e50;">🔊 Gerenciar Equipamentos</button>
+                        <div class="divider"></div>
                         
-                        <button onclick="window.location.href='ponto.html'" style="margin-top: 10px;">⏰ Bater Ponto</button>
+                        <button class="btn-secondary" onclick="window.location.href='clientes.html'">👥 Gerenciar Clientes</button>
+                        <button class="btn-secondary" onclick="window.location.href='agencias.html'">🏢 Gerenciar Agências</button>
+                        <button class="btn-secondary" onclick="window.location.href='equipamentos.html'">🔊 Gerenciar Equipamentos</button>
+                        
+                        <div class="divider"></div>
+                        
+                        <button class="btn-primary" onclick="window.location.href='ponto.html'">⏰ Bater Ponto</button>
                     </div>
 
                     <div class="system-status">
                         <h4>Status do Sistema</h4>
                         <p>🟢 Online e Operacional</p>
-                        <p id="systemVersion" style="font-size: 0.85em; color: #666; margin-top: 5px;">Versão: 1.14</p>
+                        <p id="systemVersion" style="font-size: 0.85em; color: var(--text-muted); margin-top: 5px;">Versão: 1.14</p>
                     </div>
                 </aside>
 

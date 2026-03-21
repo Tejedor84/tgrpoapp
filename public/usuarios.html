@@ -3,78 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TG Log - Gestão de Usuários</title>
+    <title>TG Pro - Gestão de Usuários</title>
     <link rel="icon" type="image/png" href="logo.png">
     
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="usuarios.css">
 </head>
 <body>
 
-    <div class="dashboard-container">
-        <header class="top-bar">
-            <div style="display: flex; align-items: center;">
-                <a href="painel.html" class="btn-back-panel">⬅ Voltar ao Painel</a>
-                <h2>Usuários e Permissões</h2>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <img src="logo.png" alt="TG Pro Logo" class="nav-logo">
+            <span>Usuários e Permissões</span>
+        </div>
+        <div class="nav-links">
+            <a href="painel.html" class="nav-item">⬅ Voltar ao Painel</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <header class="page-header">
+            <div class="header-title">
+                <h1>Acessos do Sistema</h1>
+                <p>Gerencie quem pode acessar e o que cada um pode fazer. O <strong>Nome</strong> e <strong>Telefone</strong> aparecerão nos orçamentos.</p>
             </div>
-            <div class="user-info">
-                <button id="btnNewUser" class="btn-primary">+ Novo Usuário</button>
-            </div>
+            <button id="btnNewUser" class="btn-primary">+ Novo Usuário</button>
         </header>
 
-        <main class="main-content">
-            <div class="users-container">
-                <p class="desc-text">
-                    Gerencie os acessos. O <strong>Nome</strong> e <strong>Telefone</strong> definidos aqui aparecerão nos orçamentos gerados por este usuário.
-                </p>
+        <div class="card-table">
+            <table class="tabela-padrao">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Nível</th>
+                        <th>Acessos</th>
+                        <th width="100" style="text-align: center;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <tr><td colspan="5" style="text-align:center;">Carregando usuários...</td></tr>
+                </tbody>
+            </table>
+        </div>
 
-                <table class="users-table">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>E-mail</th>
-                            <th>Nível</th>
-                            <th>Acessos</th>
-                            <th width="100">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="usersTableBody">
-                        <tr><td colspan="5" style="text-align:center;">Carregando...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </main>
     </div>
 
     <div id="modalUser" class="modal hidden">
-        <div class="modal-content" style="max-width: 900px;">
-            <span id="closeModal" class="close-btn">&times;</span>
-            <h3 id="modalTitle">Dados do Usuário</h3>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Dados do Usuário</h2>
+                <span id="closeModal" class="close-modal">&times;</span>
+            </div>
             
             <form id="formUser">
                 <input type="hidden" id="userId">
                 
-                <div class="input-group" style="margin-bottom: 15px;">
-                    <label>Nome Completo (Para Orçamentos)</label>
-                    <input type="text" id="inpName" required placeholder="Ex: Pedro Silva">
+                <div class="form-group">
+                    <label>Nome Completo (Aparecerá nos Orçamentos)</label>
+                    <input type="text" id="inpName" class="form-control" required placeholder="Ex: Pedro Silva">
                 </div>
 
                 <div class="row-dupla">
-                    <div class="input-group">
-                        <label>E-mail de Login</label>
-                        <input type="email" id="inpEmail" required placeholder="email@tglog.com.br">
+                    <div class="form-group" style="flex: 1;">
+                        <label>E-mail de Login *</label>
+                        <input type="email" id="inpEmail" class="form-control" required placeholder="email@exemplo.com.br">
                     </div>
-                    <div class="input-group">
-                        <label>Telefone / WhatsApp (Para Orçamentos)</label>
-                        <input type="text" id="inpPhone" placeholder="(11) 99999-9999">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Telefone / WhatsApp</label>
+                        <input type="text" id="inpPhone" class="form-control" placeholder="(11) 99999-9999">
                     </div>
                 </div>
 
-                <div class="perm-card admin-card">
+                <div class="admin-card">
                     <div style="flex: 1;">
                         <strong>👑 Administrador Geral</strong>
-                        <p>Acesso total irrestrito (ignora configurações abaixo).</p>
+                        <p>Acesso total irrestrito (ignora todas as configurações abaixo).</p>
                     </div>
                     <label class="switch">
                         <input type="checkbox" id="perm_admin">
@@ -82,7 +88,7 @@
                     </label>
                 </div>
 
-                <h4 class="section-title">Permissões por Módulo</h4>
+                <h3 class="section-title">Permissões por Módulo</h3>
                 <div class="perm-grid">
                     
                     <div class="perm-item">
@@ -101,7 +107,6 @@
                             <option value="editor">✏️ Editor</option>
                         </select>
                     </div>
-
                     <div class="perm-item">
                         <span>🎉 Eventos</span>
                         <select id="perm_eventos" class="perm-select">
@@ -126,9 +131,8 @@
                             <option value="editor">✏️ Editor</option>
                         </select>
                     </div>
-
                     <div class="perm-item rh-border">
-                        <span style="color:#FFD700;">⏰ Ponto Eletrônico</span>
+                        <span style="color:var(--primary-color);">⏰ Ponto Eletrônico</span>
                         <select id="perm_ponto" class="perm-select">
                             <option value="">🚫 Bloqueado</option>
                             <option value="editor">✏️ Acesso Permitido</option>
@@ -150,7 +154,6 @@
                             <option value="editor">✏️ Editor</option>
                         </select>
                     </div>
-
                     <div class="perm-item">
                         <span>🤝 Clientes</span>
                         <select id="perm_clientes" class="perm-select">
@@ -175,7 +178,6 @@
                             <option value="editor">✏️ Editor</option>
                         </select>
                     </div>
-
                     <div class="perm-item">
                         <span>💲 Pagamentos</span>
                         <select id="perm_pagamentos" class="perm-select">
@@ -195,7 +197,7 @@
 
                 </div>
 
-                <div class="form-actions">
+                <div class="modal-actions">
                     <button type="button" id="btnCancel" class="btn-secondary">Cancelar</button>
                     <button type="submit" class="btn-primary">Salvar Permissões</button>
                 </div>
@@ -203,9 +205,8 @@
         </div>
     </div>
 
-    <script src="autoupdate.js"></script> <script src="auth-guard.js"></script>
-    <script type="module" src="seu-arquivo-especifico.js"></script>
-
+    <script src="autoupdate.js"></script> 
+    <script src="auth-guard.js"></script>
     <script type="module" src="usuarios.js"></script>
 </body>
 </html>

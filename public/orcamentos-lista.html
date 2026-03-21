@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TG Pro - Propostas</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="orcamentos-lista.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-brand">
+            <img src="logo.png" alt="TG Pro" class="nav-logo">
+            <span>Propostas / Orçamentos</span>
+        </div>
+        <div class="nav-links">
+            <span id="user-email" class="user-email-badge">Carregando...</span>
+            <a href="painel.html" class="nav-item">&#8592; Voltar ao Painel</a>
+        </div>
+    </nav>
+
+    <div class="page-container">
+
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <input type="text" id="inpBusca" class="form-control search-input" placeholder="🔍 Buscar por nº da proposta ou cliente...">
+                <select id="selStatus" class="form-control" style="max-width:160px;">
+                    <option value="">Todos os status</option>
+                    <option value="Rascunho">Rascunho</option>
+                    <option value="Enviado">Enviado</option>
+                    <option value="Aprovado">Aprovado</option>
+                    <option value="Cancelado">Cancelado</option>
+                </select>
+            </div>
+            <div class="toolbar-right">
+                <a href="orcamentos.html" class="btn-primary">+ Nova Proposta</a>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th style="width:130px;">Nº Proposta</th>
+                        <th>Cliente / Empresa</th>
+                        <th>Contato</th>
+                        <th style="width:110px;">Data</th>
+                        <th style="width:110px;">Evento</th>
+                        <th style="width:120px;">Total</th>
+                        <th style="width:110px;">Status</th>
+                        <th style="width:80px;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr><td colspan="8" class="loading-cell">Carregando propostas...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="emptyState" class="empty-state" style="display:none;">
+            <div class="empty-icon">📋</div>
+            <p>Nenhuma proposta encontrada.</p>
+            <a href="orcamentos.html" class="btn-primary">Criar primeira proposta</a>
+        </div>
+
+    </div>
+
+    <script src="autoupdate.js"></script>
+    <script src="auth-guard.js"></script>
+    <script type="module" src="orcamentos-lista.js"></script>
+</body>
+</html>

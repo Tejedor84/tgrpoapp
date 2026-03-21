@@ -1,0 +1,220 @@
+/* =================================================================
+   CRM.CSS - Kanban Pipeline de Vendas
+   ================================================================= */
+
+.navbar {
+    display: flex; justify-content: space-between; align-items: center;
+    background-color: var(--bg-card); padding: 15px 24px;
+    border-bottom: 2px solid var(--primary-color);
+}
+.nav-brand { display: flex; align-items: center; gap: 12px; font-size: 1.1rem; font-weight: 700; color: var(--primary-color); }
+.nav-logo  { height: 36px; }
+.nav-links { display: flex; align-items: center; gap: 15px; }
+.user-email-badge { font-size: 0.85rem; color: var(--text-muted); }
+.nav-item  { color: var(--text-main); text-decoration: none; font-size: 0.9rem; padding: 8px 15px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); transition: all 0.2s; }
+.nav-item:hover { border-color: var(--primary-color); color: var(--primary-color); }
+
+/* --- CONTROLES --- */
+.crm-controls {
+    max-width: 1400px;
+    margin: 20px auto 0;
+    padding: 0 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* --- KANBAN BOARD --- */
+.kanban-board {
+    display: flex;
+    gap: 14px;
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+    overflow-x: auto;
+    align-items: flex-start;
+    min-height: calc(100vh - 160px);
+}
+
+.kanban-column {
+    flex: 1;
+    min-width: 220px;
+    max-width: 280px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s;
+}
+
+.kanban-column.drag-over {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.15);
+}
+
+/* --- CABEÇALHOS DAS COLUNAS --- */
+.column-header {
+    padding: 12px 14px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.col-count {
+    background: rgba(0,0,0,0.25);
+    color: #fff;
+    font-size: 0.7rem;
+    padding: 2px 7px;
+    border-radius: 99px;
+    font-weight: 700;
+}
+
+.header-prospeccao  { background: #3a3a4a; color: #aaa; }
+.header-qualificacao{ background: #1a3a5c; color: #7ab4e0; }
+.header-proposta    { background: #3a2a1a; color: #e0a04a; }
+.header-negociacao  { background: #2a1a3a; color: #b07ae0; }
+.header-fechado     { background: #1a3a2a; color: #4ae07a; }
+
+/* --- CONTEÚDO DA COLUNA --- */
+.column-content {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 80px;
+    flex: 1;
+}
+
+/* --- CARDS --- */
+.deal-card {
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    cursor: grab;
+    transition: box-shadow 0.2s, transform 0.15s;
+    user-select: none;
+}
+
+.deal-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transform: translateY(-1px);
+}
+
+.deal-card.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+    transform: rotate(1.5deg);
+}
+
+.deal-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    margin-bottom: 6px;
+    line-height: 1.3;
+}
+
+.deal-value {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 4px;
+}
+
+.deal-owner {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.deal-obs {
+    font-size: 0.75rem;
+    color: #666;
+    border-top: 1px solid var(--border-color);
+    padding-top: 6px;
+    margin-top: 6px;
+    line-height: 1.4;
+    white-space: pre-wrap;
+}
+
+.deal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-top: 8px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 8px;
+}
+
+.btn-deal-edit,
+.btn-deal-del {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    opacity: 0.5;
+    transition: opacity 0.2s, transform 0.15s;
+    padding: 2px 4px;
+}
+
+.btn-deal-edit:hover { opacity: 1; transform: scale(1.2); }
+.btn-deal-del:hover  { opacity: 1; color: var(--danger-color); transform: scale(1.2); }
+
+/* --- MODAL --- */
+.modal {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.hidden { display: none !important; }
+
+.modal-content {
+    background: var(--bg-card);
+    width: 90%;
+    max-width: 480px;
+    border-radius: var(--radius-md);
+    padding: 28px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    position: relative;
+}
+
+.close-btn {
+    position: absolute;
+    top: 16px; right: 20px;
+    font-size: 1.5rem;
+    color: #666;
+    cursor: pointer;
+    line-height: 1;
+}
+.close-btn:hover { color: #fff; }
+
+.input-group { margin-bottom: 16px; }
+.input-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px; }
+
+.form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+
+/* --- RESPONSIVO --- */
+@media (max-width: 768px) {
+    .kanban-board {
+        flex-direction: column;
+        padding: 14px;
+    }
+
+    .kanban-column {
+        min-width: unset;
+        max-width: unset;
+        width: 100%;
+    }
+}

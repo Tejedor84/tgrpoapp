@@ -67,15 +67,19 @@
     </style>
 </head>
 <body>
-    <div class="dashboard-container">
-        <header class="top-bar">
-            <div style="display:flex; align-items:center;">
-                <a href="painel.html" class="btn-back-panel">⬅ Voltar</a>
-                <h2>Registro de Ponto</h2>
-            </div>
-        </header>
 
-        <main class="main-content">
+    <nav class="navbar">
+        <div class="nav-brand">
+            <img src="logo.png" alt="TG Pro" class="nav-logo">
+            <span class="nav-title">Registrar Ponto</span>
+        </div>
+        <div class="nav-links">
+            <span id="user-email" class="user-email-badge">Carregando...</span>
+            <a href="painel.html" class="nav-item">⬅ Voltar ao Painel</a>
+        </div>
+    </nav>
+
+        <main class="page-container">
             <div class="status-hoje">
                 <p id="txtUsuario" style="color: #aaa;">Verificando usuário...</p>
                 <div id="txtRelogio" class="relogio-container">00:00:00</div>

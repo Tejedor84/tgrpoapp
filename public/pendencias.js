@@ -1,70 +1,144 @@
+/* =================================================================
+   PENDENCIAS.JS - Reescrito para o kanban do HTML atual
+   ================================================================= */
 import { auth, db } from "./firebase-init.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { verificarPermissao } from "./auth-guard.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const userEmailSpan = document.getElementById('user-email');
-const btnLogout = document.getElementById('btnLogout');
-const inpNewTask = document.getElementById('inpNewTask');
-const btnAddTask = document.getElementById('btnAddTask');
-const pendenciasList = document.getElementById('pendenciasList');
+let tarefasCache = [];
 
+// --- ELEMENTOS ---
+const modal      = document.getElementById('modalTask');
+const form       = document.getElementById('formTask');
+const btnNewTask = document.getElementById('btnNewTask');
+const btnCancel  = document.getElementById('btnCancel');
+const closeModal = document.getElementById('closeModal');
+const searchInput = document.getElementById('searchInput');
+
+// --- AUTH ---
 onAuthStateChanged(auth, async (user) => {
     if (user) {
-        if(userEmailSpan) userEmailSpan.textContent = user.email;
-        await verificarPermissao(db, user.email);
-        carregarPendencias();
+        document.getElementById('user-email').textContent = user.email;
+        iniciarListener();
     } else {
         window.location.href = "index.html";
     }
 });
 
-if(btnLogout) btnLogout.addEventListener('click', () => signOut(auth).then(() => window.location.href = "index.html"));
+// --- LISTENER REALTIME ---
+function iniciarListener() {
+    const q = query(collection(db, "pendencias"), orderBy("criadoEm", "desc"));
+    onSnapshot(q, (snap) => {
+        tarefasCache = [];
+        snap.forEach(d => tarefasCache.push({ id: d.id, ...d.data() }));
+        renderizarKanban();
+    });
+}
 
-function carregarPendencias() {
-    // Ordena por status (pendentes primeiro) e depois data
-    const q = query(collection(db, "pendencias"), orderBy("concluido"), orderBy("criadoEm", "desc"));
-    
-    onSnapshot(q, (snapshot) => {
-        pendenciasList.innerHTML = "";
-        snapshot.forEach(docSnap => {
-            const task = docSnap.data();
-            const id = docSnap.id;
-            
-            const li = document.createElement('li');
-            li.className = task.concluido ? "completed" : "";
-            
-            li.innerHTML = `
-                <span onclick="toggleTask('${id}', ${task.concluido})">${task.texto}</span>
-                <button onclick="excluirTask('${id}')" class="btn-trash">🗑️</button>
+// --- RENDERIZAR KANBAN ---
+function renderizarKanban() {
+    const termo = (searchInput?.value || '').toLowerCase();
+
+    const colunas = { todo: [], doing: [], done: [] };
+
+    tarefasCache.forEach(t => {
+        if (termo && !(t.descricao || '').toLowerCase().includes(termo)) return;
+        const col = t.status || 'todo';
+        if (colunas[col]) colunas[col].push(t);
+    });
+
+    Object.entries(colunas).forEach(([status, tarefas]) => {
+        const lista = document.getElementById(`list-${status}`);
+        if (!lista) return;
+        lista.innerHTML = '';
+
+        if (tarefas.length === 0) {
+            lista.innerHTML = `<p style="color:#555; font-size:0.85rem; text-align:center; padding:16px 0;">Nenhuma tarefa.</p>`;
+            return;
+        }
+
+        tarefas.forEach(t => {
+            const prioridadeColor = t.prioridade === 'Alta' ? '#e04a4a'
+                : t.prioridade === 'Media' ? '#e0a04a' : '#4a9ae0';
+
+            const card = document.createElement('div');
+            card.className = 'task-card';
+            card.style.cssText = 'background:var(--bg-input); border:1px solid var(--border-color); border-radius:6px; padding:12px; margin-bottom:8px;';
+
+            card.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px;">
+                    <span style="font-size:0.9rem; color:var(--text-main); line-height:1.4;">${t.descricao || ''}</span>
+                    <span style="flex-shrink:0; font-size:0.7rem; padding:2px 7px; border-radius:99px; background:${prioridadeColor}22; color:${prioridadeColor}; font-weight:600;">${t.prioridade || 'Baixa'}</span>
+                </div>
+                ${t.responsavel ? `<div style="font-size:0.78rem; color:var(--text-muted);">👤 ${t.responsavel}</div>` : ''}
+                <div style="display:flex; justify-content:flex-end; gap:6px; margin-top:10px; border-top:1px solid var(--border-color); padding-top:8px;">
+                    ${status !== 'todo'   ? `<button onclick="moverTarefa('${t.id}', '${prevStatus(status)}')" style="font-size:0.75rem; padding:3px 8px;" class="btn-secondary">◀</button>` : ''}
+                    ${status !== 'done'   ? `<button onclick="moverTarefa('${t.id}', '${nextStatus(status)}')" style="font-size:0.75rem; padding:3px 8px;" class="btn-secondary">▶</button>` : ''}
+                    <button onclick="excluirTarefa('${t.id}')" style="font-size:0.75rem; padding:3px 8px; border-color:#ff4d4d; color:#ff4d4d;" class="btn-secondary">🗑️</button>
+                </div>
             `;
-            pendenciasList.appendChild(li);
+            lista.appendChild(card);
         });
     });
 }
 
-if(btnAddTask) {
-    btnAddTask.addEventListener('click', async () => {
-        const texto = inpNewTask.value;
-        if(!texto) return;
-        
-        try {
-            await addDoc(collection(db, "pendencias"), {
-                texto: texto,
-                concluido: false,
-                criadoEm: new Date().toISOString()
-            });
-            inpNewTask.value = "";
-        } catch(e) { console.error(e); }
-    });
-}
+function nextStatus(s) { return s === 'todo' ? 'doing' : 'done'; }
+function prevStatus(s) { return s === 'done' ? 'doing' : 'todo'; }
 
-window.toggleTask = async (id, statusAtual) => {
-    try { await updateDoc(doc(db, "pendencias", id), { concluido: !statusAtual }); }
-    catch(e) { console.error(e); }
+searchInput?.addEventListener('input', renderizarKanban);
+
+// --- MODAL ---
+btnNewTask?.addEventListener('click', () => {
+    form.reset();
+    document.getElementById('taskId').value = '';
+    document.getElementById('modalTitle').textContent = 'Nova Tarefa';
+    modal.style.display = 'flex';
+});
+
+const fechar = () => { modal.style.display = 'none'; form.reset(); };
+closeModal?.addEventListener('click', fechar);
+btnCancel?.addEventListener('click', fechar);
+modal?.addEventListener('click', (e) => { if (e.target === modal) fechar(); });
+
+// --- SALVAR ---
+form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+
+    const dados = {
+        descricao:   document.getElementById('taskDesc').value.trim(),
+        prioridade:  document.getElementById('taskPriority').value,
+        responsavel: document.getElementById('taskOwner').value.trim(),
+        status:      document.getElementById('taskStatus').value,
+        criadoEm:    serverTimestamp()
+    };
+
+    try {
+        const id = document.getElementById('taskId').value;
+        if (id) {
+            delete dados.criadoEm;
+            await updateDoc(doc(db, "pendencias", id), dados);
+        } else {
+            await addDoc(collection(db, "pendencias"), dados);
+        }
+        fechar();
+    } catch (err) {
+        alert("Erro ao salvar: " + err.message);
+    } finally {
+        btn.disabled = false;
+    }
+});
+
+// --- MOVER / EXCLUIR ---
+window.moverTarefa = async (id, novoStatus) => {
+    try { await updateDoc(doc(db, "pendencias", id), { status: novoStatus }); }
+    catch (e) { alert("Erro: " + e.message); }
 };
 
-window.excluirTask = async (id) => {
-    try { await deleteDoc(doc(db, "pendencias", id)); }
-    catch(e) { console.error(e); }
+window.excluirTarefa = async (id) => {
+    if (confirm("Excluir esta tarefa?")) {
+        try { await deleteDoc(doc(db, "pendencias", id)); }
+        catch (e) { alert("Erro: " + e.message); }
+    }
 };

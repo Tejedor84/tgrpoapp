@@ -44,3 +44,48 @@
 .btn-delete { background-color: #c0392b; }
 .contact-badge { display: block; font-size: 11px; color: #666; margin-bottom: 2px; }
 .contact-badge b { color: #000; }
+
+/* =================================================================
+   CORREÇÃO: inputs dentro de fundo branco
+   O style.css global força cor branca — precisa sobrescrever aqui
+   ================================================================= */
+.form-container input,
+.form-container select,
+.form-container textarea,
+.form-container label,
+.form-container h3,
+.form-group label,
+.contacts-section input,
+.contacts-section label,
+.contacts-section h4,
+.section-header h4,
+.list-container input,
+.list-container label,
+.list-container h3,
+.list-container td,
+.list-container th {
+    color: #333 !important;
+    -webkit-text-fill-color: #333 !important;
+    background-color: transparent !important;
+}
+
+.form-container input,
+.form-container select,
+.contacts-section input,
+.contact-row input,
+.search-bar input,
+.list-container input {
+    background-color: #fff !important;
+}
+
+.form-container input:focus,
+.form-container select:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2) !important;
+}
+
+.page-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}

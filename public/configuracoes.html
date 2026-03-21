@@ -5,54 +5,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TG Log - Configurações</title>
     <link rel="icon" type="image/png" href="logo.png">
-    
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="configuracoes.css">
 </head>
 <body>
 
-    <div class="dashboard-container">
-        <main class="main-content">
-            
-            <header class="top-bar" style="display: flex; justify-content: space-between; align-items: center;">
-                <div style="display: flex; align-items: center;">
-                    <a href="painel.html" class="btn-back-panel">⬅ Voltar ao Painel</a>
-                    <h2>Configurações do Sistema</h2>
-                </div>
-                <div class="user-info"><span id="user-email">Carregando...</span></div>
-            </header>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <img src="logo.png" alt="TG Pro" class="nav-logo">
+            <span class="nav-title">Configurações do Sistema</span>
+        </div>
+        <div class="nav-links">
+            <span id="user-email" class="user-email-badge">Carregando...</span>
+            <a href="painel.html" class="nav-item">⬅ Voltar ao Painel</a>
+        </div>
+    </nav>
 
-            <div class="content-area">
-                <div class="config-section">
-                    <h3>Perfil da Empresa</h3>
+    <div class="page-container">
+
+        <form id="formConfig">
+            <div class="config-section">
+                <h3>🏢 Perfil da Empresa</h3>
+                <p class="section-desc">Estes dados aparecem nos orçamentos e documentos gerados.</p>
+
+                <div class="row-dupla">
                     <div class="input-group">
-                        <label>Nome da Empresa (Para Orçamentos)</label>
+                        <label>Nome da Empresa *</label>
                         <input type="text" id="confEmpresa" placeholder="TG LOG Eventos">
                     </div>
                     <div class="input-group">
                         <label>CNPJ</label>
                         <input type="text" id="confCnpj" placeholder="00.000.000/0001-00">
                     </div>
-                    <button id="btnSaveCompany" class="btn-primary" style="width:auto; margin-top:10px;">Salvar Dados</button>
                 </div>
 
-                <div class="config-section" style="margin-top:30px;">
-                    <h3>Backup e Dados</h3>
-                    <p style="color:#888; margin-bottom:15px;">Ações sensíveis de administração.</p>
-                    <button id="btnBackup" class="btn-secondary">📥 Baixar Backup (JSON)</button>
-                    <button id="btnClearCache" class="btn-secondary" style="border-color:#ff4d4d; color:#ff4d4d;">🗑️ Limpar Cache Local</button>
+                <div class="input-group">
+                    <label>Endereço Completo</label>
+                    <input type="text" id="confEndereco" placeholder="Rua, Número, Bairro, Cidade - Estado">
                 </div>
-                
-                <div class="config-section" style="margin-top:30px;">
-                    <h3>Sobre o Sistema</h3>
-                    <p>Versão Atual: <strong style="color:#FFD700;">1.0 (TG PRO)</strong></p>
-                    <p style="font-size:0.9em; color:#666;">Desenvolvido para Gestão Logística.</p>
+
+                <div class="row-dupla">
+                    <div class="input-group">
+                        <label>Telefone / WhatsApp</label>
+                        <input type="text" id="confTelefone" placeholder="(11) 99999-9999">
+                    </div>
+                    <div class="input-group">
+                        <label>E-mail de Contato</label>
+                        <input type="email" id="confEmail" placeholder="contato@empresa.com.br">
+                    </div>
                 </div>
+
+                <div class="input-group">
+                    <label>Site</label>
+                    <input type="text" id="confSite" placeholder="www.tgproducoes.com.br">
+                </div>
+
+                <button type="submit" class="btn-primary" style="width:auto; margin-top:8px;">💾 Salvar Dados da Empresa</button>
             </div>
-        </main>
+        </form>
+
+        <div class="config-section" style="margin-top:24px;">
+            <h3>🗄️ Backup e Dados</h3>
+            <p class="section-desc">Ações sensíveis de administração.</p>
+            <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                <button id="btnClearCache" class="btn-secondary" style="border-color:#ff4d4d; color:#ff4d4d;">🗑️ Limpar Cache Local</button>
+            </div>
+        </div>
+
+        <div class="config-section" style="margin-top:24px;">
+            <h3>ℹ️ Sobre o Sistema</h3>
+            <p style="color:var(--text-muted); font-size:0.9rem; margin:4px 0;">Versão Atual: <strong style="color:var(--primary-color);" id="versaoAtual">—</strong></p>
+            <p style="color:#555; font-size:0.85rem; margin:4px 0;">Desenvolvido para Gestão de Produção de Eventos.</p>
+        </div>
+
     </div>
-    <script src="autoupdate.js"></script> <script src="auth-guard.js"></script>
+
+    <script src="autoupdate.js"></script>
+    <script src="auth-guard.js"></script>
     <script type="module" src="configuracoes.js"></script>
 </body>
 </html>

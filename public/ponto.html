@@ -3,108 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TG Log - Controle de Ponto</title>
+    <title>TG Pro - Controle de Ponto</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="ponto.css">
 </head>
 <body>
+
+    <nav class="navbar">
+        <div class="nav-brand">
+            <img src="logo.png" alt="TG Pro Logo" class="nav-logo">
+            <span>Controle de Ponto</span>
+        </div>
+        <div class="nav-links">
+            <span id="userEmail" class="user-email-badge">Carregando...</span>
+            <a href="painel.html" class="nav-item">⬅ Voltar ao Painel</a>
+        </div>
+    </nav>
+
     <div class="container">
-        <header>
-            <div class="logo-area">
-                <img src="logo.png" alt="TG Log Logo" class="logo">
-                <h1>Controle de Ponto</h1>
-            </div>
-            <div class="user-info">
-                <span id="user-email">...</span>
-                <button onclick="window.location.href='painel.html'" class="btn-secondary">Voltar</button>
-            </div>
-        </header>
-
-        <main>
-            <section class="controls">
-                <div class="filters">
-                    <div class="filter-group">
-                        <label>Colaborador:</label>
-                        <select id="filterUser">
-                            <option value="">Todos os Colaboradores</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label>Mês/Ano:</label>
-                        <input type="month" id="filterMonth">
-                    </div>
+        
+        <div class="toolbar-section">
+            <div class="toolbar-filters">
+                <div class="input-wrapper">
+                    <label>Colaborador</label>
+                    <select id="filterUser" class="form-control">
+                        <option value="">Todos os Colaboradores</option>
+                    </select>
                 </div>
-                <div class="actions">
-                    <button id="btnManualLaunch" class="btn-primary">+ Lançamento Manual</button>
+                <div class="input-wrapper">
+                    <label>Mês/Ano</label>
+                    <input type="month" id="filterMonth" class="form-control">
                 </div>
-            </section>
+            </div>
 
-            <section class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Colaborador</th>
-                            <th>Entrada</th>
-                            <th>Saída</th>
-                            <th>Status</th>
-                            <th>Obs</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pontoBody">
-                        </tbody>
-                </table>
-            </section>
-        </main>
+            <div class="toolbar-actions">
+                <button id="btnManualLaunch" class="btn-primary">+ Lançamento Manual</button>
+            </div>
+        </div>
+
+        <div class="card-table">
+            <table class="tabela-padrao">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Colaborador</th>
+                        <th>Entrada</th>
+                        <th>Saída</th>
+                        <th>Status</th>
+                        <th>Obs</th>
+                        <th style="text-align: center;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="pontoBody">
+                    <tr><td colspan="7" style="text-align: center;">Carregando registros de ponto...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 
     <div id="modalPonto" class="modal hidden">
         <div class="modal-content">
-            <h2 id="modalTitle">Lançamento de Ponto</h2>
+            <div class="modal-header">
+                <h2 id="modalTitle">Lançamento de Ponto</h2>
+            </div>
+            
             <form id="formPonto">
                 <input type="hidden" id="pontoId">
                 
-                <div class="input-group">
-                    <label>Colaborador</label>
-                    <select id="inpUser" required></select>
+                <div class="form-group">
+                    <label>Colaborador *</label>
+                    <select id="inpUser" class="form-control" required></select>
                 </div>
 
-                <div class="row">
-                    <div class="input-group">
-                        <label>Data</label>
-                        <input type="date" id="inpDate" required>
+                <div class="row-dupla">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Data *</label>
+                        <input type="date" id="inpDate" class="form-control" required>
                     </div>
-                    <div class="input-group">
-                        <label>Tipo de Registro</label>
-                        <select id="inpStatus">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Tipo de Registro *</label>
+                        <select id="inpStatus" class="form-control" required>
                             <option value="Trabalho">Trabalho Normal</option>
                             <option value="Folga">Folga</option>
                             <option value="Descanso">Descanso</option>
                             <option value="Feriado">Feriado</option>
                             <option value="Falta">Falta</option>
                             <option value="Atestado">Atestado</option>
+                            <option value="Ferias">Férias</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="row" id="timeFields">
-                    <div class="input-group">
+                <div class="row-dupla" id="timeFields">
+                    <div class="form-group" style="flex: 1;">
                         <label>Horário Entrada</label>
-                        <input type="time" id="inpEntry">
+                        <input type="time" id="inpEntry" class="form-control">
                     </div>
-                    <div class="input-group">
+                    <div class="form-group" style="flex: 1;">
                         <label>Horário Saída</label>
-                        <input type="time" id="inpExit">
+                        <input type="time" id="inpExit" class="form-control">
                     </div>
                 </div>
 
-                <div class="input-group">
+                <div class="form-group">
                     <label>Observações</label>
-                    <textarea id="inpObs" rows="3" placeholder="Ex: Viagem, feriado trabalhado, etc..."></textarea>
+                    <textarea id="inpObs" rows="3" class="form-control" placeholder="Ex: Viagem, feriado trabalhado, etc..."></textarea>
                 </div>
 
-                <div class="modal-buttons">
+                <div class="modal-actions">
                     <button type="button" id="btnCancel" class="btn-secondary">Cancelar</button>
                     <button type="submit" class="btn-primary">Salvar Registro</button>
                 </div>
@@ -112,8 +122,7 @@
         </div>
     </div>
 
-    <script src="autoupdate.js"></script> <script src="auth-guard.js"></script>
-    <script type="module" src="seu-arquivo-especifico.js"></script>
+    <script src="autoupdate.js"></script> 
     <script src="auth-guard.js"></script>
     <script type="module" src="ponto.js"></script>
 </body>

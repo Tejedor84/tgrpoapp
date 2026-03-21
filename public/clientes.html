@@ -10,18 +10,19 @@
 </head>
 <body>
 
-    <div class="dashboard-container">
-        <header class="top-bar">
-            <div style="display: flex; align-items: center;">
-                <a href="painel.html" class="btn-back-panel">⬅ Voltar ao Painel</a>
-                <h2>Gestão de Clientes</h2>
-            </div>
-            <div class="user-info">
-                <span id="user-email">Carregando...</span>
-            </div>
-        </header>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <img src="logo.png" alt="TG Pro" class="nav-logo">
+            <span class="nav-title">Gestão de Clientes</span>
+        </div>
+        <div class="nav-links">
+            <span id="user-email" class="user-email-badge">Carregando...</span>
+            <a href="painel.html" class="nav-item">⬅ Voltar ao Painel</a>
+        </div>
+    </nav>
 
-        <main class="workspace">
+
+        <main class="page-container">
             
             <div class="form-container">
                 <h3>Novo / Editar Cliente</h3>

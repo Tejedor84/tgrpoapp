@@ -1,0 +1,126 @@
+/* =================================================================
+   RELATORIO_PONTO.CSS - PADRONIZADO E PRONTO PARA IMPRESSÃO
+   ================================================================= */
+
+/* --- TOOLBAR / FILTROS --- */
+.toolbar-section {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 20px; margin-bottom: 30px;
+    display: flex; flex-wrap: wrap; gap: 20px;
+    align-items: flex-end; justify-content: space-between;
+}
+
+.toolbar-filters {
+    display: flex; gap: 15px; flex: 1; min-width: 300px;
+}
+
+.input-wrapper { flex: 1; }
+.input-wrapper label {
+    display: block; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 5px;
+}
+
+.form-control { width: 100%; padding: 10px; border-radius: 4px; border: 1px solid var(--border-color); background-color: var(--bg-input); color: var(--text-main); font-size: 0.95rem; outline: none; }
+
+.toolbar-actions {
+    display: flex; gap: 10px;
+}
+
+/* --- TABELA --- */
+.card-table {
+    background-color: var(--bg-card); border-radius: 8px;
+    border: 1px solid var(--border-color); overflow-x: auto;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+.tabela-padrao {
+    width: 100%; border-collapse: collapse; min-width: 700px;
+}
+
+.tabela-padrao th {
+    background-color: #252525; color: var(--text-main); font-weight: 600;
+    text-transform: uppercase; font-size: 0.85rem; padding: 15px;
+    text-align: left; border-bottom: 2px solid var(--border-color);
+}
+
+.tabela-padrao td {
+    padding: 12px 15px; border-bottom: 1px solid var(--border-color);
+    color: #ddd; font-size: 0.9rem;
+}
+
+.tabela-padrao tr:hover { background-color: rgba(255, 215, 0, 0.05); }
+
+/* --- OCULTO NA TELA, SÓ VAI PRO PAPEL --- */
+.print-header { display: none; }
+
+/* =================================================================
+   AJUSTES PARA CELULAR
+   ================================================================= */
+@media (max-width: 768px) {
+    .navbar { flex-direction: column; padding: 15px; }
+    .nav-links { width: 100%; justify-content: space-between; }
+    .toolbar-section { flex-direction: column; align-items: stretch; }
+    .toolbar-filters { flex-direction: column; }
+    .toolbar-actions button { width: 100%; }
+}
+
+/* =================================================================
+   MAGICA DA IMPRESSÃO E PDF (@media print)
+   ================================================================= */
+@media print {
+    /* Esconde botões e barras laterais */
+    .no-print, .navbar, .toolbar-section, .btn-icon { display: none !important; }
+    
+    /* Configurações da Página de Papel */
+    body, .container, .card-table, table, th, td {
+        background-color: #fff !important;
+        color: #000 !important;
+        margin: 0; padding: 0;
+        width: 100%;
+    }
+
+    /* Mostra o cabeçalho bonitão da empresa */
+    .print-header {
+        display: block !important;
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #000;
+    }
+    
+    .print-header h2 { color: #000; margin: 10px 0 5px 0; }
+    .print-header p { color: #555; font-size: 14px; }
+
+    /* Força a tabela a ter cores nítidas e fundos claros */
+    .card-table {
+        border: none; box-shadow: none;
+    }
+
+    .tabela-padrao { border: 1px solid #ccc; width: 100%; }
+
+    .tabela-padrao th {
+        background-color: #f5f5f5 !important;
+        color: #000 !important;
+        border: 1px solid #000 !important;
+    }
+
+    .tabela-padrao td {
+        color: #000 !important;
+        border: 1px solid #ccc !important;
+    }
+
+    .tabela-padrao th, .tabela-padrao td {
+        padding: 8px; font-size: 12px; /* Reduz fonte pra caber no papel */
+    }
+
+    /* MAGICA: TRANSFORMA TEXTO AMARELO/VERDE EM PRETO NA IMPRESSÃO */
+    .status-badge {
+        color: #000 !important;             /* Letra Preta */
+        background-color: transparent !important; /* Sem fundo amarelo/verde */
+        border: 1px solid #000 !important;  /* Borda preta pra ficar bonito */
+        text-shadow: none !important;
+        box-shadow: none !important;
+        font-weight: 900 !important;
+    }
+}

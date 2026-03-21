@@ -1,83 +1,76 @@
-/* =================================================================
-   CRONOGRAMA.JS - VERSÃO COM DUPLICAÇÃO DE TAREFAS
-   ================================================================= */
-
 import { auth, db } from "./firebase-init.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { collection, addDoc, onSnapshot, query, orderBy, where, doc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// --- ELEMENTOS ---
+// --- ELEMENTOS DOM ---
 const grid = document.getElementById('cronogramaGrid');
 const modal = document.getElementById('modalTask');
 const form = document.getElementById('formTask');
-const userEmailSpan = document.getElementById('user-email');
-
-// Filtros
 const filterDate = document.getElementById('filterDate');
 const filterText = document.getElementById('filterText');
-
-// Botões
-const btnAdd = document.getElementById('btnAdd');
-const btnHistory = document.getElementById('btnHistory');
-const btnCopy = document.getElementById('btnCopy');
-const btnCancel = document.getElementById('btnCancel');
-const closeModal = document.getElementById('closeModal');
-
-// Campos do Form
-const inpDate = document.getElementById('inpDate');
+const chkNoTime = document.getElementById('chkNoTime');
 const inpTime = document.getElementById('inpTime');
-const chkNoTime = document.getElementById('chkNoTime'); 
+const selectLocal = document.getElementById('inpLocal');
 
-// Variáveis de Estado
-let tarefas = []; 
+// --- ESTADO ---
+let tarefas = [];
 let modoHistorico = false;
-let unsubscribe = null;
+let eventoAtualId = null;
+let unsubCronograma = null;
+let unsubComentarios = null;
 
-// --- 1. INICIALIZAÇÃO ---
+// --- INICIALIZAÇÃO ---
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        userEmailSpan.textContent = user.email;
-        iniciarListener(); 
+        // Fallback de segurança: suporta tanto a navbar antiga quanto a nova sem quebrar o código
+        const userSpan = document.getElementById('userEmail') || document.getElementById('user-email');
+        if (userSpan) userSpan.textContent = user.email;
+        
+        carregarLocais();
+        iniciarListenerCronograma(); // Carrega tudo sem forçar filtro na data atual
     } else {
         window.location.href = "index.html";
     }
 });
 
-// --- 2. LISTENER (Checkbox Hora) ---
-chkNoTime.addEventListener('change', () => {
-    if (chkNoTime.checked) {
-        inpTime.value = ""; 
-        inpTime.disabled = true; 
-        inpTime.required = false; 
-    } else {
-        inpTime.disabled = false;
-    }
+// --- LOCAIS (DROPDOWN) ---
+function carregarLocais() {
+    onSnapshot(query(collection(db, "locais"), orderBy("nome")), (snapshot) => {
+        selectLocal.innerHTML = '<option value="">Selecione um local...</option>';
+        snapshot.forEach(doc => {
+            const opt = document.createElement('option');
+            opt.value = doc.data().nome;
+            opt.textContent = doc.data().nome;
+            selectLocal.appendChild(opt);
+        });
+    });
+}
+
+// --- CONTROLE DE TEMPO (A DEFINIR) ---
+chkNoTime.addEventListener('change', (e) => {
+    inpTime.value = "";
+    inpTime.disabled = e.target.checked;
 });
 
-// --- 3. LISTENER DO FIREBASE ---
-function iniciarListener() {
-    if(unsubscribe) unsubscribe(); 
+// --- LISTENERS DE DADOS ---
+function definirDataHoje() {
+    const hoje = new Date().toISOString().split('T')[0];
+    filterDate.value = hoje;
+}
+
+function iniciarListenerCronograma() {
+    if (unsubCronograma) unsubCronograma();
 
     const hoje = new Date().toISOString().split('T')[0];
-    let q;
+    let q = modoHistorico 
+        ? query(collection(db, "cronograma"), where("data", "<", hoje), orderBy("data", "desc"))
+        : query(collection(db, "cronograma"), where("data", ">=", hoje), orderBy("data", "asc"));
 
-    if (modoHistorico) {
-        q = query(collection(db, "cronograma"), where("data", "<", hoje), orderBy("data", "desc"));
-        btnHistory.textContent = "Voltar para Hoje";
-        btnHistory.classList.add("active-history");
-    } else {
-        q = query(collection(db, "cronograma"), where("data", ">=", hoje), orderBy("data", "asc"));
-        btnHistory.textContent = "📜 Histórico";
-        btnHistory.classList.remove("active-history");
-    }
+    const btnHistory = document.getElementById('btnHistory');
+    if(btnHistory) btnHistory.style.backgroundColor = modoHistorico ? "#555" : "";
 
-    unsubscribe = onSnapshot(q, (snapshot) => {
-        tarefas = [];
-        snapshot.forEach(doc => {
-            tarefas.push({ id: doc.id, ...doc.data() });
-        });
-        
-        // Ordenação Secundária (Hora)
+    unsubCronograma = onSnapshot(q, (snapshot) => {
+        tarefas = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         tarefas.sort((a, b) => {
             if (a.data === b.data) {
                 if (a.hora === "A definir") return 1;
@@ -86,428 +79,286 @@ function iniciarListener() {
             }
             return 0;
         });
-
         renderizar();
-    }, (error) => {
-        console.error("Erro:", error);
-        grid.innerHTML = `<p class="loading-msg" style="color:#ff4d4d">Erro: ${error.message}</p>`;
     });
 }
 
-// --- 4. RENDERIZAÇÃO ---
-const DIAS_SEMANA = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
-const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-
-function formatarDiaCabecalho(dataISO) {
-    const [y, m, d] = dataISO.split('-').map(Number);
-    const dt = new Date(y, m - 1, d);
-    const diaSemana = DIAS_SEMANA[dt.getDay()];
-    return `${diaSemana}, ${String(d).padStart(2,'0')} de ${MESES[m-1]}`;
-}
-
-function isHoje(dataISO) {
-    const hoje = new Date();
-    const hojeISO = `${hoje.getFullYear()}-${String(hoje.getMonth()+1).padStart(2,'0')}-${String(hoje.getDate()).padStart(2,'0')}`;
-    return dataISO === hojeISO;
-}
-
+// --- RENDERIZAÇÃO ---
 function renderizar() {
     grid.innerHTML = "";
-
     const termo = filterText.value.toLowerCase();
-    const dataFiltro = filterDate.value;
+    const dataF = filterDate.value;
 
     const filtrados = tarefas.filter(t => {
-        const matchTexto =
-            t.titulo.toLowerCase().includes(termo) ||
-            (t.local && t.local.toLowerCase().includes(termo)) ||
-            (t.equipe && t.equipe.toLowerCase().includes(termo));
-        let matchData = true;
-        if (dataFiltro) matchData = (t.data === dataFiltro);
-        return matchTexto && matchData;
+        const txt = `${t.titulo || ""} ${t.local || ""} ${t.equipe || ""}`.toLowerCase();
+        const matchData = dataF ? t.data === dataF : true;
+        return txt.includes(termo) && matchData;
     });
 
-    if (filtrados.length === 0) {
-        grid.innerHTML = `<p class="loading-msg">Nenhuma atividade encontrada.</p>`;
+    if (!filtrados.length) {
+        grid.innerHTML = `<p class="loading-msg">Nenhuma atividade localizada.</p>`;
         return;
     }
 
-    // Agrupa por data
-    const porDia = {};
+    // 1. Agrupamento em tempo de execução
+    const gruposPorData = {};
     filtrados.forEach(t => {
-        const chave = t.data || 'sem-data';
-        if (!porDia[chave]) porDia[chave] = [];
-        porDia[chave].push(t);
+        const dataStr = t.data ? t.data.split('-').reverse().join('/') : "Data Inválida";
+        if (!gruposPorData[dataStr]) gruposPorData[dataStr] = [];
+        gruposPorData[dataStr].push(t);
     });
 
-    // Ordena dias e cards dentro de cada dia por hora
-    const diasOrdenados = Object.keys(porDia).sort();
-    diasOrdenados.forEach(dia => {
-        porDia[dia].sort((a, b) => {
-            if (!a.hora || a.hora === 'A definir') return 1;
-            if (!b.hora || b.hora === 'A definir') return -1;
-            return a.hora.localeCompare(b.hora);
-        });
-    });
+    // 2. Renderização por blocos
+    for (const [data, itens] of Object.entries(gruposPorData)) {
+        
+        // Injeção do Divisor Visual de Data
+        const divisor = document.createElement('div');
+        divisor.style.gridColumn = "1 / -1";
+        divisor.style.borderBottom = "1px solid #333";
+        divisor.style.marginTop = "20px";
+        divisor.style.paddingBottom = "5px";
+        divisor.innerHTML = `<h3 style="color: #FFD700; margin: 0; font-size: 1.2em;"><i class="fas fa-calendar-day"></i> ${data}</h3>`;
+        grid.appendChild(divisor);
 
-    diasOrdenados.forEach(dia => {
-        const tarefasDoDia = porDia[dia];
-        const hoje = isHoje(dia);
-
-        // Cabeçalho do dia
-        const dayHeader = document.createElement('div');
-        dayHeader.className = 'day-group-header' + (hoje ? ' day-today' : '');
-        const labelDia = dia !== 'sem-data' ? formatarDiaCabecalho(dia) : 'Data não definida';
-        dayHeader.innerHTML = `
-            <div class="day-label">
-                <span class="day-name">${labelDia}</span>
-                ${hoje ? '<span class="today-badge">HOJE</span>' : ''}
-            </div>
-            <span class="day-count">${tarefasDoDia.length} atividade${tarefasDoDia.length > 1 ? 's' : ''}</span>`;
-        grid.appendChild(dayHeader);
-
-        // Grid de cards do dia
-        const dayGrid = document.createElement('div');
-        dayGrid.className = 'day-cards-grid';
-        grid.appendChild(dayGrid);
-
-        tarefasDoDia.forEach(t => {
+        // Injeção dos Cartões
+        itens.forEach(t => {
             const card = document.createElement('div');
-            const classeExtra = t.pendencias ? 'has-pending' : '';
-            card.className = `task-card ${classeExtra}`;
-
-            let displayHora = "";
-            if (t.hora === "A definir") {
-                displayHora = `<span class="hora-pill hora-indefinida">⚠️ A Definir</span>`;
-            } else if (t.hora) {
-                displayHora = `<span class="hora-pill">⏰ ${t.hora}</span>`;
-            }
-
-            let equipeVisual = "";
-            if (t.equipe) {
-                equipeVisual = t.equipe.split('\n')
-                    .map(n => n.trim()).filter(Boolean)
-                    .map(n => `<span class="equipe-nome">| ${n}</span>`)
-                    .join('');
-            }
+            card.className = `task-card ${t.pendencias ? 'has-pending' : ''}`;
+            
+            const exibeHora = t.hora === "A definir" ? "⚠️ A Definir" : `⏰ ${t.hora || ""}`;
+            const equipeBr = (t.equipe || "").replace(/\n/g, "<br>");
+            const obsBr = (t.detalhes || "").replace(/\n/g, "<br>");
 
             card.innerHTML = `
-                <div class="card-top">
-                    <div class="card-hora">${displayHora}</div>
-                    <div class="card-actions">
-                        <button class="btn-icon" onclick="editarTarefa('${t.id}')" title="Editar">✏️</button>
-                        <button class="btn-icon" onclick="duplicarTarefa('${t.id}')" title="Duplicar">📄</button>
-                        <button class="btn-icon" onclick="excluirTarefa('${t.id}')" title="Excluir" style="color:#ff4d4d;">🗑️</button>
-                    </div>
+                <div class="card-header">
+                    <span>📅 ${data}</span>
+                    <span class="card-time">${exibeHora}</span>
                 </div>
-
-                <div class="card-title">${t.titulo}</div>
-
+                <div class="card-title">${t.titulo || "Sem título"}</div>
                 <div class="card-details">
-                    ${t.local    ? `<div class="detail-row"><span class="detail-icon">📍</span><span>${t.local}</span></div>` : ''}
-                    ${t.equipe   ? `<div class="detail-row detail-equipe"><span class="detail-icon">👥</span><div class="equipe-lista">${equipeVisual}</div></div>` : ''}
-                    ${t.detalhes ? `<div class="detail-row"><span class="detail-icon">📝</span><span>${t.detalhes}</span></div>` : ''}
-                    ${t.pendencias ? `<div class="detail-row pending-alert"><span>⚠️</span><span>${t.pendencias}</span></div>` : ''}
-                </div>`;
-
-            dayGrid.appendChild(card);
+                    ${t.local ? `<p>📍 ${t.local}</p>` : ''}
+                    ${t.equipe ? `<p>👥<br>${equipeBr}</p>` : ''}
+                    ${t.detalhes ? `<p>📝<br>${obsBr}</p>` : ''}
+                    ${t.pendencias ? `<p class="pending-alert">⚠️ ${t.pendencias}</p>` : ''}
+                </div>
+                <div class="card-actions">
+                    <button type="button" class="btn-icon btn-dup" data-id="${t.id}" title="Duplicar">📑</button>
+                    <button type="button" class="btn-icon btn-edit" data-id="${t.id}" title="Editar">✏️</button>
+                    <button type="button" class="btn-icon btn-del" data-id="${t.id}" title="Excluir" style="color:#ff4d4d;">🗑️</button>
+                </div>
+            `;
+            grid.appendChild(card);
         });
+    }
+}
+
+
+
+
+// --- FILTROS RÁPIDOS ---
+const btnToday = document.getElementById('btnToday');
+if(btnToday) {
+    btnToday.addEventListener('click', () => {
+        modoHistorico = false;
+        definirDataHoje();
+        iniciarListenerCronograma();
     });
 }
 
-filterText.addEventListener('input', renderizar);
-filterDate.addEventListener('input', renderizar);
+const btnHistory = document.getElementById('btnHistory');
+if(btnHistory) {
+    btnHistory.addEventListener('click', () => {
+        modoHistorico = true;
+        filterDate.value = "";
+        iniciarListenerCronograma();
+    });
+}
 
-// --- 5. CRUD ---
-btnAdd.addEventListener('click', () => {
+// --- GESTÃO DO MODAL E FORMULÁRIO ---
+const fecharModal = () => {
+    modal.classList.add('hidden');
     form.reset();
     document.getElementById('taskId').value = "";
-    chkNoTime.checked = false;
     inpTime.disabled = false;
-    if(filterDate.value) inpDate.value = filterDate.value;
-    else inpDate.valueAsDate = new Date();
-    
-    carregarComentarios(null);
+    eventoAtualId = null;
+    if(unsubComentarios) unsubComentarios();
+};
+
+document.getElementById('btnAdd').addEventListener('click', () => {
+    fecharModal();
+    document.getElementById('inpDate').value = filterDate.value || new Date().toISOString().split('T')[0];
+    document.getElementById('lista-comentarios').innerHTML = '<div class="empty-state">Salve para comentar.</div>';
+    document.querySelector('.comentarios-input-area').style.display = 'none';
     modal.classList.remove('hidden');
 });
 
-const fechar = () => {
-    modal.classList.add('hidden');
-    form.reset(); // Força a limpeza das validações HTML 5 do navegador
-    document.getElementById('taskId').value = ""; // Limpa a referência de edição
-    chkNoTime.checked = false; // Restaura o checkbox
-    inpTime.disabled = false; // Destrava o campo de hora
-}
-
-closeModal.addEventListener('click' , fechar);
-btnCancel.addEventListener('click' , fechar);
+document.getElementById('closeModal').addEventListener('click', fecharModal);
+document.getElementById('btnCancel').addEventListener('click', fecharModal);
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const id = document.getElementById('taskId').value;
-    let horaFinal = chkNoTime.checked ? "A definir" : inpTime.value;
-
-    const dados = {
-        data: inpDate.value,
-        hora: horaFinal,
+    
+    const payload = {
+        data: document.getElementById('inpDate').value,
+        hora: chkNoTime.checked ? "A definir" : inpTime.value,
         titulo: document.getElementById('inpTitle').value,
-        local: document.getElementById('inpLocal').value,
-        equipe: document.getElementById('inpTeam').value, 
+        local: selectLocal.value,
+        equipe: document.getElementById('inpTeam').value,
         pendencias: document.getElementById('inpPending').value,
         detalhes: document.getElementById('inpDetails').value
     };
 
-    fechar();
+    fecharModal();
 
     try {
-        if (id) await updateDoc(doc(db, "cronograma", id), dados);
-        else await addDoc(collection(db, "cronograma"), dados);
-    } catch (error) {
-        alert("Erro ao salvar: " + error.message);
+        if (id) await updateDoc(doc(db, "cronograma", id), payload);
+        else await addDoc(collection(db, "cronograma"), payload);
+    } catch (err) {
+        alert("Erro ao salvar: " + err.message);
     }
 });
 
-// EDIÇÃO
-
-window.editarTarefa = (id) => {
-    const t = tarefas.find(x => x.id === id);
-    if (!t) return;
-
-    form.reset(); // Limpeza preventiva antes de popular novos dados
-
-    document.getElementById('taskId').value = t.id;
-    document.getElementById('inpDate').value = t.data;
-
-    // Carrega histórico de chat
-    carregarComentarios(t.id);
-    modal.style.display = 'flex';
-};
-
-// --- NOVA FUNÇÃO: DUPLICAR TAREFA ---
-window.duplicarTarefa = (id) => {
-    const t = tarefas.find(x => x.id === id);
-    if (!t) return;
-
-    // 1. Limpa o ID para garantir que salve como NOVO
-    document.getElementById('taskId').value = ""; 
+// --- DELEGAÇÃO DE EVENTOS (LÁPIS, LIXEIRA E DUPLICAR) ---
+grid.addEventListener('click', async (e) => {
+    const btnEdit = e.target.closest('.btn-edit');
+    const btnDel = e.target.closest('.btn-del');
+    const btnDup = e.target.closest('.btn-dup'); 
     
-    // 2. Preenche os dados iguais ao original
-    preencherFormulario(t);
+    // AÇÃO: DUPLICAR TAREFA
+    if (btnDup) {
+        const t = tarefas.find(x => x.id === btnDup.dataset.id);
+        if (!t) return;
 
-    // 3. NÃO carrega comentários (começa do zero)
-    carregarComentarios(null);
+        fecharModal();
 
-    // 4. Abre o modal e foca na DATA para a pessoa mudar
-    modal.style.display = 'flex';
-    
-    // Pequeno aviso visual ou foco
-    const dataInput = document.getElementById('inpDate');
-    dataInput.focus();
-    // Opcional: dataInput.showPicker(); // Se o navegador suportar, abre o calendário direto
-};
+        document.getElementById('taskId').value = ""; 
+        document.getElementById('inpDate').value = t.data || "";
 
-// Função auxiliar para não repetir código
-function preencherFormulario(t) {
-    document.getElementById('inpDate').value = t.data;
-    
-    if (t.hora === "A definir") {
-        chkNoTime.checked = true;
-        inpTime.value = "";
-        inpTime.disabled = true;
-    } else {
-        chkNoTime.checked = false;
-        inpTime.value = t.hora;
-        inpTime.disabled = false;
-    }
-
-    document.getElementById('inpTitle').value = t.titulo;
-    document.getElementById('inpLocal').value = t.local;
-    document.getElementById('inpTeam').value = t.equipe; 
-    document.getElementById('inpPending').value = t.pendencias;
-    document.getElementById('inpDetails').value = t.detalhes;
-}
-
-window.excluirTarefa = async (id) => {
-    if(confirm("Tem certeza que deseja excluir esta atividade?")) {
-        try {
-            await deleteDoc(doc(db, "cronograma", id));
-        } catch (error) {
-            alert("Erro ao excluir: " + error.message);
+        if (t.hora === "A definir") {
+            chkNoTime.checked = true;
+            inpTime.value = "";
+            inpTime.disabled = true;
+        } else {
+            chkNoTime.checked = false;
+            inpTime.value = t.hora || "";
+            inpTime.disabled = false;
         }
-    }
-};
 
-// --- EXTRAS ---
-btnHistory.addEventListener('click', () => {
-    modoHistorico = !modoHistorico;
-    filterDate.value = "";
-    filterText.value = "";
-    iniciarListener();
-});
+        document.getElementById('inpTitle').value = `${t.titulo} (Cópia)` || ""; 
+        selectLocal.value = t.local || "";
+        document.getElementById('inpTeam').value = t.equipe || "";
+        document.getElementById('inpPending').value = t.pendencias || "";
+        document.getElementById('inpDetails').value = t.detalhes || "";
 
-btnCopy.addEventListener('click', () => {
-    // Lê direto do array de dados filtrados (não depende de seletores DOM)
-    const termo = filterText.value.toLowerCase();
-    const dataFiltro = filterDate.value;
+        document.getElementById('lista-comentarios').innerHTML = '<div class="empty-state">Salve a atividade para habilitar comentários.</div>';
+        document.querySelector('.comentarios-input-area').style.display = 'none';
 
-    const filtrados = tarefas.filter(t => {
-        const matchTexto =
-            t.titulo.toLowerCase().includes(termo) ||
-            (t.local  && t.local.toLowerCase().includes(termo)) ||
-            (t.equipe && t.equipe.toLowerCase().includes(termo));
-        const matchData = !dataFiltro || t.data === dataFiltro;
-        return matchTexto && matchData;
-    });
-
-    if (filtrados.length === 0) return alert("Nada para copiar.");
-
-    // Agrupa por data (mesmo critério da renderização)
-    const porDia = {};
-    filtrados.forEach(t => {
-        const chave = t.data || 'sem-data';
-        if (!porDia[chave]) porDia[chave] = [];
-        porDia[chave].push(t);
-    });
-
-    // Ordena dias e por hora dentro de cada dia
-    const diasOrdenados = Object.keys(porDia).sort();
-    diasOrdenados.forEach(dia => {
-        porDia[dia].sort((a, b) => {
-            if (!a.hora || a.hora === 'A definir') return 1;
-            if (!b.hora || b.hora === 'A definir') return -1;
-            return a.hora.localeCompare(b.hora);
-        });
-    });
-
-    let textoFinal = `*AGENDA LOGISTICA - TG LOG*\n\n`;
-
-    diasOrdenados.forEach(dia => {
-        const labelDia = dia !== 'sem-data'
-            ? dia.split('-').reverse().join('/')
-            : 'Data não definida';
-
-        textoFinal += `*${labelDia}*\n`;
-        textoFinal += `------------------------\n`;
-
-        porDia[dia].forEach(t => {
-            const hora = (!t.hora || t.hora === 'A definir') ? 'A definir' : t.hora;
-            textoFinal += `*${hora} - ${t.titulo}*\n`;
-
-            if (t.local)    textoFinal += `*Local: ${t.local}*\n`;
-
-            if (t.equipe) {
-                t.equipe.split('\n').map(n => n.trim()).filter(Boolean)
-                    .forEach(nome => { textoFinal += `| ${nome}\n`; });
-            }
-
-            if (t.detalhes)   textoFinal += `*${t.detalhes}*\n`;
-            if (t.pendencias) textoFinal += `*⚠️ ${t.pendencias}*\n`;
-
-            textoFinal += `\n`;
-        });
-
-        textoFinal += `\n`;
-    });
-
-    navigator.clipboard.writeText(textoFinal).then(() => {
-        alert("Copiado com sucesso!");
-    }).catch(() => {
-        alert("Erro ao copiar. Verifique as permissões do navegador.");
-    });
-});
-
-/* =========================================================
-   MÓDULO DE COMENTÁRIOS
-   ========================================================= */
-
-let eventoAtualId = null;
-let unsubscribeComments = null; 
-
-function carregarComentarios(eventoId) {
-    eventoAtualId = eventoId;
-    const listaDiv = document.getElementById('lista-comentarios');
-    const inputArea = document.querySelector('.comentarios-input-area');
-    
-    if (unsubscribeComments) unsubscribeComments();
-
-    if (!eventoId) {
-        listaDiv.innerHTML = '<div class="empty-state">Salve a atividade para habilitar os comentários.</div>';
-        inputArea.style.display = 'none';
-        return;
+        modal.classList.remove('hidden');
     }
 
-    inputArea.style.display = 'flex';
-    listaDiv.innerHTML = '<div class="empty-state">Carregando conversas...</div>';
+    // AÇÃO: EDITAR
+    if (btnEdit) {
+        const t = tarefas.find(x => x.id === btnEdit.dataset.id);
+        if (!t) return;
 
-    const q = query(
-        collection(db, "cronograma", eventoId, "comentarios"),
-        orderBy("data", "asc")
-    );
-
-    unsubscribeComments = onSnapshot(q, (snapshot) => {
-        listaDiv.innerHTML = '';
+        fecharModal(); 
         
-        if (snapshot.empty) {
-            listaDiv.innerHTML = '<div class="empty-state">Nenhum comentário ainda.</div>';
+        document.getElementById('taskId').value = t.id;
+        document.getElementById('inpDate').value = t.data || "";
+        
+        if (t.hora === "A definir") {
+            chkNoTime.checked = true;
+            inpTime.value = "";
+            inpTime.disabled = true;
+        } else {
+            chkNoTime.checked = false;
+            inpTime.value = t.hora || "";
+            inpTime.disabled = false;
+        }
+
+        document.getElementById('inpTitle').value = t.titulo || "";
+        selectLocal.value = t.local || "";
+        document.getElementById('inpTeam').value = t.equipe || "";
+        document.getElementById('inpPending').value = t.pendencias || "";
+        document.getElementById('inpDetails').value = t.detalhes || "";
+
+        iniciarComentarios(t.id);
+        modal.classList.remove('hidden');
+    }
+
+    // AÇÃO: DELETAR
+    if (btnDel && confirm("Excluir atividade?")) {
+        await deleteDoc(doc(db, "cronograma", btnDel.dataset.id));
+    }
+}); 
+
+// --- COPIAR PARA WHATSAPP ---
+document.getElementById('btnCopy').addEventListener('click', () => {
+    const cards = document.querySelectorAll('.task-card');
+    if (!cards.length) return alert("Nada para copiar.");
+
+    let texto = `*AGENDA LOGÍSTICA - TG LOG*\n\n`;
+    
+    cards.forEach(c => {
+        const data = c.querySelector('.card-header span:first-child').innerText.replace('📅', '').trim();
+        const hora = c.querySelector('.card-time').innerText.replace('⏰', '').replace('⚠️', '').trim();
+        const titulo = c.querySelector('.card-title').innerText.trim();
+        
+        texto += `*DATA: ${data}*\n`;
+        texto += `*${hora ? hora + ' - ' : ''}${titulo}*\n`;
+        
+        c.querySelectorAll('.card-details p').forEach(p => {
+            const raw = p.innerText.replace(/📍|👥|📝|⚠️/g, '').trim();
+            if (raw) texto += `> ${raw.replace(/\n/g, '\n> ')}\n`;
+        });
+        texto += `\n`;
+    });
+
+    navigator.clipboard.writeText(texto).then(() => alert("Copiado!")).catch(()=>alert("Erro."));
+});
+
+// --- MÓDULO DE COMENTÁRIOS ---
+function iniciarComentarios(id) {
+    eventoAtualId = id;
+    const lista = document.getElementById('lista-comentarios');
+    document.querySelector('.comentarios-input-area').style.display = 'flex';
+    lista.innerHTML = 'Carregando...';
+
+    const q = query(collection(db, "cronograma", id, "comentarios"), orderBy("data", "asc"));
+    unsubComentarios = onSnapshot(q, (snap) => {
+        lista.innerHTML = '';
+        if (snap.empty) {
+            lista.innerHTML = '<div class="empty-state">Nenhum comentário.</div>';
             return;
         }
-
-        snapshot.forEach(doc => {
-            renderizarComentario(doc.data());
+        snap.forEach(doc => {
+            const d = doc.data();
+            const dateStr = d.data ? d.data.toDate().toLocaleString('pt-BR') : 'Agora';
+            lista.innerHTML += `
+                <div class="comentario-item">
+                    <div class="comentario-header"><b>${d.autor}</b> <small>${dateStr}</small></div>
+                    <div class="comentario-texto">${d.texto}</div>
+                </div>`;
         });
-        
-        listaDiv.scrollTop = listaDiv.scrollHeight;
+        lista.scrollTop = lista.scrollHeight;
     });
 }
 
-function renderizarComentario(data) {
-    const listaDiv = document.getElementById('lista-comentarios');
-    
-    let dataFormatada = 'Agora';
-    if (data.data) {
-        const dateObj = data.data.toDate();
-        dataFormatada = dateObj.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) + 
-                        ' ' + 
-                        dateObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    }
-
-    const div = document.createElement('div');
-    div.className = 'comentario-item';
-    div.innerHTML = `
-        <div class="comentario-header">
-            <span class="comentario-autor">${data.autor || 'Usuário'}</span>
-            <span style="font-size:10px;">${dataFormatada}</span>
-        </div>
-        <div class="comentario-texto">${data.texto}</div>
-    `;
-    
-    listaDiv.appendChild(div);
-}
-
-window.enviarComentario = function() {
-    const input = document.getElementById('novo-comentario');
-    const texto = input.value.trim();
-    
-    if (!texto) return;
-    if (!eventoAtualId) return alert("Erro: ID do evento não encontrado.");
-
-    const user = auth.currentUser;
-    const autorEmail = user ? user.email.split('@')[0] : 'Anônimo'; 
-
-    addDoc(collection(db, "cronograma", eventoAtualId, "comentarios"), {
-        texto: texto,
-        autor: autorEmail,
-        data: serverTimestamp()
-    }).then(() => {
-        input.value = ''; 
-    }).catch(err => {
-        console.error("Erro ao comentar:", err);
-        alert("Erro ao enviar mensagem.");
-    });
-};
-
-document.getElementById('novo-comentario').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-        window.enviarComentario();
-    }
+document.getElementById('btnSendComment').addEventListener('click', enviarComentario);
+document.getElementById('novo-comentario').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') enviarComentario();
 });
+
+async function enviarComentario() {
+    const inp = document.getElementById('novo-comentario');
+    if (!inp.value.trim() || !eventoAtualId) return;
+
+    const autor = auth.currentUser ? auth.currentUser.email.split('@')[0] : 'User';
+    await addDoc(collection(db, "cronograma", eventoAtualId, "comentarios"), {
+        texto: inp.value.trim(),
+        autor: autor,
+        data: serverTimestamp()
+    });
+    inp.value = '';
+}

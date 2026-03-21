@@ -170,3 +170,11 @@ tbody tr:hover {
         max-width: 100%;
     }
 }
+
+.btn-status { border: none; padding: 4px 12px; border-radius: 99px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
+.status-pago      { background: rgba(76,175,80,0.2);  color: #4caf50; }
+.status-pendente  { background: rgba(255,215,0,0.15); color: #FFD700; }
+.status-atrasado  { background: rgba(255,77,77,0.2);  color: #ff4d4d; }
+.btn-status:hover { opacity: 0.75; }
+.btn-action { background: transparent; border: none; cursor: pointer; font-size: 1rem; opacity: 0.5; transition: opacity 0.2s; }
+.btn-action:hover { opacity: 1; }

@@ -87,3 +87,25 @@ if(formConfig) {
         }
     });
 }
+// --- 3. CACHE CLEAR ---
+const btnClearCache = document.getElementById('btnClearCache');
+if (btnClearCache) {
+    btnClearCache.addEventListener('click', () => {
+        if (confirm("Limpar o cache local do navegador e recarregar?")) {
+            if ('caches' in window) {
+                caches.keys().then(names => names.forEach(n => caches.delete(n)));
+            }
+            // Força reload sem cache
+            window.location.reload(true);
+        }
+    });
+}
+
+// --- 4. VERSÃO DO SISTEMA ---
+const spanVersao = document.getElementById('versaoSistema');
+if (spanVersao) {
+    fetch('version.json?t=' + Date.now())
+        .then(r => r.json())
+        .then(v => { spanVersao.textContent = `v${v.version} (${v.last_update})`; })
+        .catch(() => { spanVersao.textContent = 'N/A'; });
+}

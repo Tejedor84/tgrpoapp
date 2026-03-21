@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TG Pro - Relatório de Ponto</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="relatorio_ponto.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar no-print">
+        <div class="nav-brand">
+            <img src="logo.png" alt="TG Pro Logo" class="nav-logo">
+            <span>Relatório de Ponto</span>
+        </div>
+        <div class="nav-links">
+            <span id="user-email" class="user-email-badge">Carregando...</span>
+            <a href="painel.html" class="nav-item">⬅ Voltar ao Painel</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="toolbar-section no-print">
+            <div class="toolbar-filters">
+                <div class="input-wrapper" style="max-width: 200px;">
+                    <label>Mês / Ano</label>
+                    <input type="month" id="filterMonth" class="form-control">
+                </div>
+                <div class="input-wrapper" style="max-width: 300px;">
+                    <label>Colaborador</label>
+                    <select id="filterEmployee" class="form-control">
+                        <option value="">Todos os Colaboradores</option>
+                    </select>
+                </div>
+            </div>
+            <div class="toolbar-actions">
+                <button class="btn-primary" onclick="window.gerarRelatorio()">Gerar Relatório</button>
+                <button class="btn-secondary" onclick="window.print()"><i class="fas fa-print"></i> Imprimir / PDF</button>
+            </div>
+        </div>
+
+        <div class="print-header">
+            <h2>Relatório de Ponto</h2>
+            <p id="print-info">Período: --/----</p>
+        </div>
+
+        <div class="card-table">
+            <table class="tabela-padrao">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Colaborador</th>
+                        <th>Status</th>
+                        <th>Entrada</th>
+                        <th>Saída</th>
+                        <th style="text-align: right;">Total de Horas</th>
+                        <th>Observações</th> </tr>
+                </thead>
+                <tbody id="lista-relatorio">
+                    <tr><td colspan="7" style="text-align: center; padding: 20px;">Utilize os filtros e clique em "Gerar Relatório".</td></tr>
+                </tbody>
+                <tfoot id="rodape-relatorio" style="display: none; background: #222; font-weight: bold;">
+                    <tr>
+                        <td colspan="5" style="text-align: right; color: #fff;">TOTAL GERAL:</td>
+                        <td id="totalGeralHoras" style="text-align: right; color: var(--primary-color);">0h 0m</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <script src="autoupdate.js"></script> 
+    <script src="auth-guard.js"></script>
+    <script type="module" src="relatorio_ponto.js"></script>
+</body>
+</html>

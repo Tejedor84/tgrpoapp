@@ -1,131 +1,162 @@
-/* ARQUIVO: eventos.css */
+/* =================================================================
+   EVENTOS.CSS - V2 (COM EQUIPE)
+   ================================================================= */
 
-/* --- LAYOUT DO TOPO --- */
-.page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    flex-wrap: wrap;
-    gap: 15px;
+/* --- NAVBAR SUPERIOR --- */
+.navbar {
+    display: flex; justify-content: space-between; align-items: center;
+    background-color: var(--bg-card); padding: 15px 30px;
+    border-bottom: 1px solid var(--border-color); margin-bottom: 20px;
 }
-
-.header-controls {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    flex: 1;
-    justify-content: flex-end;
+.nav-brand {
+    display: flex; align-items: center; gap: 15px;
+    font-size: 1.2rem; font-weight: bold; color: var(--primary-color);
 }
-
-/* Barra de Busca */
-.search-box {
-    display: flex;
-    align-items: center;
-    background-color: #1a1a1a;
-    border: 1px solid #333;
-    border-radius: 5px;
-    padding: 0 10px;
-    height: 40px;
-    min-width: 250px;
+.nav-logo { height: 40px; }
+.nav-links { display: flex; align-items: center; gap: 15px; }
+.user-email-badge { color: var(--text-muted); font-size: 0.85rem; }
+.nav-item {
+    color: var(--text-main); text-decoration: none; font-size: 0.9rem;
+    padding: 8px 15px; border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm); transition: all 0.2s;
 }
+.nav-item:hover { background-color: #333; border-color: var(--primary-color); color: var(--primary-color); }
 
-.search-box input {
-    background: transparent;
-    border: none;
-    color: #fff;
-    width: 100%;
-    outline: none;
-    font-size: 14px;
+/* --- BARRA DE FERRAMENTAS --- */
+.toolbar-section {
+    background-color: var(--bg-card); border: 1px solid var(--border-color);
+    border-radius: var(--radius-md); padding: 20px; margin-bottom: 30px;
+    display: flex; flex-wrap: wrap; gap: 20px;
+    align-items: flex-end; justify-content: space-between;
 }
+.toolbar-filters { display: flex; gap: 15px; flex: 1; min-width: 300px; }
+.input-wrapper { flex: 1; }
+.input-wrapper label { display: block; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 5px; font-weight: bold; }
+.toolbar-actions { display: flex; gap: 10px; }
 
-/* Botões do Topo (Padrão 40px) */
-.header-buttons {
-    display: flex;
+/* Campos de Texto/Select Padrão */
+.form-control {
+    width: 100%; padding: 10px; border-radius: 4px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-input); color: var(--text-main);
+    font-size: 0.95rem; outline: none;
+}
+.form-control:focus { border-color: var(--primary-color); }
+
+/* --- CAIXA DE SELEÇÃO DE EQUIPE (NOVO) --- */
+.team-selection-box {
+    max-height: 150px; /* Altura máxima */
+    overflow-y: auto; /* Barra de rolagem se tiver muita gente */
+    border: 1px solid var(--border-color);
+    background: var(--bg-input);
+    border-radius: 4px;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Duas colunas de nomes */
     gap: 10px;
 }
 
-.header-buttons button {
-    height: 40px;
-    padding: 0 20px;
-    border-radius: 5px;
-    font-weight: 700;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: none;
+.team-checkbox-item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 5px;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 3px;
+}
+.team-checkbox-item:hover {
+    background-color: rgba(255,255,255,0.05);
+}
+.team-checkbox-item input[type="checkbox"] {
+    accent-color: var(--primary-color); /* Cor da caixinha */
+    transform: scale(1.2);
 }
 
-/* Cores dos Botões */
-.btn-primary { background-color: #FFD700; color: #000; }
-.btn-primary:hover { background-color: #e6c200; transform: translateY(-2px); }
-
-/* --- TABELA (Idêntica ao Orçamentos) --- */
-.table-container {
-    background-color: transparent;
-    border: none;
-    overflow-x: auto;
-    margin-top: 10px;
+/* --- TABELA --- */
+.card-table {
+    background-color: var(--bg-card); border-radius: var(--radius-md);
+    border: 1px solid var(--border-color); overflow-x: auto;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
 }
-
-table { 
-    width: 100%; 
-    border-collapse: collapse; 
-    margin-bottom: 20px;
+.tabela-padrao { width: 100%; border-collapse: collapse; min-width: 900px; }
+.tabela-padrao th {
+    background-color: #252525; color: var(--text-main); font-weight: 600;
+    text-transform: uppercase; font-size: 0.85rem; padding: 15px;
+    text-align: left; border-bottom: 2px solid var(--border-color);
 }
-
-thead tr {
-    background-color: #1a1a1a;
-    border-bottom: 2px solid #333;
+.tabela-padrao td {
+    padding: 12px 15px; border-bottom: 1px solid var(--border-color);
+    color: #ddd; font-size: 0.9rem; vertical-align: middle;
 }
+.tabela-padrao tr:hover { background-color: rgba(255, 255, 255, 0.05); }
 
-th {
-    color: #FFD700;
-    font-weight: 700;
-    padding: 15px;
-    text-transform: uppercase;
-    font-size: 13px;
-    text-align: left;
-}
-
-td {
-    padding: 15px;
-    border-bottom: 1px solid #333;
-    color: #ddd;
-    vertical-align: middle;
-}
-
-tbody tr:hover { background-color: #111; }
-
-/* Status Badges */
+/* --- BADGES DE STATUS --- */
 .status-badge {
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: bold;
-    text-transform: uppercase;
-    display: inline-block;
+    padding: 5px 10px; border-radius: 12px; font-size: 0.75rem;
+    font-weight: bold; text-transform: uppercase; display: inline-block;
+    letter-spacing: 0.5px;
 }
-.status-pendente { background-color: #ffcc00; color: #000; }
-.status-confirmado { background-color: #28a745; color: #fff; }
-.status-cancelado { background-color: #dc3545; color: #fff; }
-.status-finalizado { background-color: #555; color: #fff; }
 
-/* --- MODAL --- */
+.status-confirmado { background: rgba(40, 167, 69, 0.2); color: #2ecc71; border: 1px solid rgba(40, 167, 69, 0.4); }
+.status-pendente   { background: rgba(255, 193, 7, 0.2); color: #ffc107; border: 1px solid rgba(255, 193, 7, 0.4); }
+.status-cancelado  { background: rgba(220, 53, 69, 0.2); color: #ff4d4d; border: 1px solid rgba(220, 53, 69, 0.4); }
+.status-finalizado { background: rgba(108, 117, 125, 0.2); color: #adb5bd; border: 1px solid rgba(108, 117, 125, 0.4); }
+
+/* Tag de Equipe na Tabela */
+.team-count-badge {
+    background: #34495e; color: #fff; font-size: 0.75rem; padding: 3px 8px; border-radius: 10px;
+}
+
+/* Ações da Tabela */
+.btn-icon {
+    background: transparent; border: none; font-size: 1.1rem;
+    cursor: pointer; margin: 0 5px; opacity: 0.7; transition: 0.2s;
+}
+.btn-icon:hover { opacity: 1; transform: scale(1.1); }
+.btn-delete { color: #e74c3c; }
+
+/* --- MODAL FLUTUANTE --- */
+.modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.85); z-index: 9999;
+    display: flex; justify-content: center; align-items: center;
+    backdrop-filter: blur(4px); padding: 20px;
+}
+.modal.hidden { display: none !important; }
+
 .modal-content {
-    background-color: #1a1a1a;
-    border: 1px solid #333;
+    background-color: var(--bg-card); width: 100%; max-width: 650px;
+    border-radius: var(--radius-md); padding: 25px;
+    border: 1px solid var(--border-color); box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+    max-height: 90vh; overflow-y: auto;
 }
 
-/* Garante inputs brancos se quiser manter padrão de orçamentos, 
-   ou deixe escuro removendo isso se preferir o dark total */
-.modal-content input, 
-.modal-content select {
-    background-color: #fff;
-    color: #000;
-    border: 1px solid #ccc;
+.modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;
+}
+.modal-header h2 { color: var(--primary-color); margin: 0; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
+.close-modal { font-size: 28px; color: #888; cursor: pointer; line-height: 1; }
+.close-modal:hover { color: #fff; }
+
+.row-dupla { display: flex; gap: 20px; margin-bottom: 15px; }
+.row-dupla .form-group { flex: 1; margin-bottom: 0; }
+
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; color: #ccc; margin-bottom: 5px; font-size: 0.9rem; }
+
+.modal-actions {
+    display: flex; justify-content: flex-end; gap: 15px;
+    margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 20px;
+}
+
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 768px) {
+    .navbar { flex-direction: column; padding: 15px; gap: 10px; }
+    .toolbar-section { flex-direction: column; align-items: stretch; }
+    .row-dupla { flex-direction: column; gap: 15px; }
+    .toolbar-actions button { width: 100%; }
+    .team-selection-box { grid-template-columns: 1fr; }
 }
